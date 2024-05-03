@@ -1,0 +1,225 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// จัดการข้อมูลผู้ใช้
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? // @db.Text
+  access_token      String? // @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? // @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model User {
+  id                    String                 @id @default(cuid())
+  name                  String?
+  email                 String?                @unique
+  emailVerified         DateTime?
+  image                 String?
+  password              String?
+  role                  String?                @default("USER")
+  accounts              Account[]
+  isTwoFactorEnabled    Boolean                @default(false)
+  twoFactorConfirmation TwoFactorConfirmation?
+
+  reviews     Review[]
+  categories  Category[]
+  boughtBooks BookBuyer[]
+  orders      Order[]
+}
+
+model UserRole {
+  id       String @id @default(cuid())
+  roleName String @unique
+}
+
+model TwoFactorConfirmation {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId])
+}
+
+// Token
+model VerificationToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+model PasswordResetToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+model TwoFactorToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+// จัดการข้อมูลหนังสือ
+model Book {
+  id                String             @id @default(cuid())
+  name              String?
+  description       String?
+  price             String?
+  writer            String?
+  publisher         String?
+  isOnSale          Boolean            @default(false)
+  bookUrl           String?
+  categoryId        String?
+  bookPreviewImages BookPreviewImage[]
+  reviews           Review[]
+  Category          Category?          @relation(fields: [categoryId], references: [id])
+  genreTags         GenreTag[]
+  bookBuyers        BookBuyer[]
+  orderBooks        OrderBook[]
+  cardBooks         CartBook[]
+}
+
+model BookPreviewImage {
+  id       String  @id @default(cuid())
+  imageUrl String?
+  bookId   String?
+  Book     Book?   @relation(fields: [bookId], references: [id])
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  comment    String?
+  userId     String?
+  bookId     String?
+  rating     Int
+  craeteDate DateTime @default(now())
+  Book       Book?    @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  User       User?    @relation(fields: [userId], references: [id])
+}
+
+model Category {
+  id           String   @id @default(cuid())
+  categoryName String?  @unique
+  categoryIcon String?
+  createdDate  DateTime @default(now())
+  books        Book[]
+  userId       String?
+  User         User?    @relation(fields: [userId], references: [id])
+}
+
+model GenreTag {
+  id           String   @id @default(cuid())
+  genreTagName String?  @unique
+  bookId       String?
+  createdDate  DateTime @default(now())
+  Book         Book?    @relation(fields: [bookId], references: [id])
+}
+
+model BookBuyer {
+  id          String   @id @default(cuid())
+  isAvailable Boolean  @default(false)
+  createdDate DateTime @default(now())
+  User        User?    @relation(fields: [userId], references: [id])
+  userId      String?
+  Book        Book?    @relation(fields: [bookId], references: [id])
+  bookId      String?
+}
+
+// จัดการข้อมูลการสั่งซื้อ
+model Order {
+  id              String      @id @default(cuid())
+  amount          Float?
+  paymentImageUrl String?
+  isPaid          Boolean     @default(false)
+  createdDate     DateTime    @default(now())
+  userId          String?
+  User            User?       @relation(fields: [userId], references: [id])
+  orderBooks      OrderBook[]
+}
+
+model OrderBook {
+  id      String  @id @default(cuid())
+  Order   Order?  @relation(fields: [orderId], references: [id])
+  orderId String?
+  Book    Book?   @relation(fields: [bookId], references: [id])
+  bookId  String?
+}
+
+// จัดการข้อมูลเว็บ
+model WebInformation {
+  id                  String               @id @default("fixid")
+  name                String?
+  email               String?
+  phone               String?
+  facebook            String?
+  line                String?
+  paymentInfomrmation PaymentInformation[]
+}
+
+model PaymentInformation {
+  id               String          @id @default(cuid())
+  paymentName      String?
+  paymentCode      String?
+  paymentImageUrl  String?
+  WebInformation   WebInformation? @relation(fields: [webInformationId], references: [id])
+  webInformationId String          @default("fixid")
+}
+
+// จัดการข้อมูลโฆษณา
+model Advertisement {
+  id                   String  @id @default(cuid())
+  title                String?
+  description          String?
+  highlightDescription String?
+  advertiseImageUrl    String?
+}
+
+// จัดการข้อมูลตะกร้าสินค้า@
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String?    @unique
+  cardBooks CartBook[]
+}
+
+model CartBook {
+  id     String  @id @default(cuid())
+  Book   Book?   @relation(fields: [bookId], references: [id])
+  bookId String?
+  Cart   Cart?   @relation(fields: [cartId], references: [id])
+  cartId String?
+}
+
+// enum UserRole {
+//   ADMIN
+//   USER
+// }
