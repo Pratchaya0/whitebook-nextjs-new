@@ -34,10 +34,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Book } from "@prisma/client";
+import { User } from "@prisma/client";
 import { FaAngleDown, FaBars } from "react-icons/fa";
 
-export const columns: ColumnDef<Book>[] = [
+export const columns: ColumnDef<User>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -66,52 +66,44 @@ export const columns: ColumnDef<Book>[] = [
     cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
   },
   {
-    accessorKey: "description",
-    header: "Description",
+    accessorKey: "email",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email
+          {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+  },
+  {
+    accessorKey: "image",
+    header: "Image Url",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("description")}</div>
+      <div className="capitalize">{row.getValue("image")}</div>
     ),
   },
   {
-    accessorKey: "price",
-    header: "Price",
+    accessorKey: "password",
+    header: "Password",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("price")}</div>
+      <div className="capitalize">{row.getValue("password")}</div>
     ),
   },
   {
-    accessorKey: "writer",
-    header: "Writer",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("writer")}</div>
-    ),
+    accessorKey: "role",
+    header: "Role",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("role")}</div>,
   },
   {
-    accessorKey: "publisher",
-    header: "Publisher",
+    accessorKey: "isTwoFactorEnabled",
+    header: "Is 2FA",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("publisher")}</div>
-    ),
-  },
-  {
-    accessorKey: "isOnSale",
-    header: "Is On Sale",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("isOnSale")}</div>
-    ),
-  },
-  {
-    accessorKey: "bookUrl",
-    header: "Book Url",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("bookUrl")}</div>
-    ),
-  },
-  {
-    accessorKey: "categoryId",
-    header: "Category",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("categoryId")}</div>
+      <div className="capitalize">{row.getValue("isTwoFactorEnabled")}</div>
     ),
   },
   {
@@ -146,12 +138,12 @@ export const columns: ColumnDef<Book>[] = [
   },
 ];
 
-interface ProductsTableProps {
-  books: Book[];
+interface UsersTableProps {
+  users: User[];
 }
 
-const ProductsTable = ({ books }: ProductsTableProps) => {
-  const data = books;
+const UsersTable = ({ users }: UsersTableProps) => {
+  const data = users;
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -296,4 +288,4 @@ const ProductsTable = ({ books }: ProductsTableProps) => {
   );
 };
 
-export default ProductsTable;
+export default UsersTable;

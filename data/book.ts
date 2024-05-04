@@ -1,12 +1,18 @@
 import { db } from "@/lib/db";
+import { Book } from "@prisma/client";
 
-export const getListBooks = async () => {
+export const getListBooks = async (all?: boolean) => {
   try {
-    const books = await db.book.findMany({
-      where: {
-        isOnSale: true,
-      },
-    });
+    let books: Book[] = [];
+    if (all) {
+      books = await db.book.findMany();
+    } else {
+      books = await db.book.findMany({
+        where: {
+          isOnSale: true,
+        },
+      });
+    }
 
     return books;
   } catch (error) {

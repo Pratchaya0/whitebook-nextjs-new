@@ -46,22 +46,32 @@ const adminComponents: { title: string; href: string; description: string }[] =
     {
       title: "Products",
       href: "/admin/products",
-      description: "You can manage all product here.",
+      description: "You can manage all of product here.",
     },
     {
       title: "Orders",
       href: "/admin/orders",
-      description: "You can manage all orders here.",
+      description: "You can manage all of orders here.",
+    },
+    {
+      title: "User",
+      href: "/admin/user",
+      description: "You can manage all of users here.",
     },
     {
       title: "Categories",
       href: "/admin/categories",
-      description: "You can manage all categories here.",
+      description: "You can manage all of categories here.",
+    },
+    {
+      title: "Genre Tag",
+      href: "/admin/genre",
+      description: "You can manage all of genres (tags) here.",
     },
     {
       title: "Web Information",
       href: "/admin/webinfo",
-      description: "You can manage all web information here.",
+      description: "You can manage all of web information here.",
     },
   ];
 

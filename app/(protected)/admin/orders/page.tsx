@@ -1,9 +1,12 @@
 import OrdersTable from "@/components/admin/orders/table";
+import { getListOrders } from "@/data/order";
+import { Order } from "@prisma/client";
 
-const OrdersPage = () => {
+const OrdersPage = async () => {
+  const orders = await getListOrders();
   return (
     <div>
-      <OrdersTable />
+      <OrdersTable orders={orders as Order[]} />
     </div>
   );
 };

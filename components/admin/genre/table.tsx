@@ -34,10 +34,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Book } from "@prisma/client";
-import { FaAngleDown, FaBars } from "react-icons/fa";
+import { GenreTag } from "@prisma/client";
 
-export const columns: ColumnDef<Book>[] = [
+export const columns: ColumnDef<GenreTag>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -61,57 +60,10 @@ export const columns: ColumnDef<Book>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "genreTagName",
     header: "Name",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("description")}</div>
-    ),
-  },
-  {
-    accessorKey: "price",
-    header: "Price",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("price")}</div>
-    ),
-  },
-  {
-    accessorKey: "writer",
-    header: "Writer",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("writer")}</div>
-    ),
-  },
-  {
-    accessorKey: "publisher",
-    header: "Publisher",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("publisher")}</div>
-    ),
-  },
-  {
-    accessorKey: "isOnSale",
-    header: "Is On Sale",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("isOnSale")}</div>
-    ),
-  },
-  {
-    accessorKey: "bookUrl",
-    header: "Book Url",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("bookUrl")}</div>
-    ),
-  },
-  {
-    accessorKey: "categoryId",
-    header: "Category",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("categoryId")}</div>
+      <div className="capitalize">{row.getValue("genreTagName")}</div>
     ),
   },
   {
@@ -120,13 +72,12 @@ export const columns: ColumnDef<Book>[] = [
     cell: ({ row }) => {
       const payment = row.original;
 
-      console.log(payment);
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
-              <FaBars className="h-4 w-4" />
+              {/* <MoreHorizontal className="h-4 w-4" /> */}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -146,12 +97,12 @@ export const columns: ColumnDef<Book>[] = [
   },
 ];
 
-interface ProductsTableProps {
-  books: Book[];
+interface GenreTagTableProps {
+  genreTags: GenreTag[];
 }
 
-const ProductsTable = ({ books }: ProductsTableProps) => {
-  const data = books;
+const GenreTagTable = ({ genreTags }: GenreTagTableProps) => {
+  const data = genreTags;
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -183,10 +134,12 @@ const ProductsTable = ({ books }: ProductsTableProps) => {
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter Name..."
+          value={
+            (table.getColumn("genreTagName")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn("genreTagName")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -194,7 +147,7 @@ const ProductsTable = ({ books }: ProductsTableProps) => {
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
               Columns
-              <FaAngleDown className="ml-2 h-4 w-4" />
+              {/* <ChevronDown className="ml-2 h-4 w-4" /> */}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -296,4 +249,4 @@ const ProductsTable = ({ books }: ProductsTableProps) => {
   );
 };
 
-export default ProductsTable;
+export default GenreTagTable;
