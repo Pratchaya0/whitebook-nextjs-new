@@ -53,6 +53,7 @@ export const getListBooksInCartByCartId = async (cartId: string) => {
 
     return books;
   } catch (error) {
+    console.error("error at getListBooksInCartByCartId = " + error)
     return null;
   }
 };

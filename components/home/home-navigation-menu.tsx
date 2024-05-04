@@ -31,6 +31,11 @@ const serviceComponents: {
     description: "All of your available E-book stay here.",
   },
   {
+    title: "Your cart",
+    href: "/services/cart",
+    description: "You can edit your personal data in here.",
+  },
+  {
     title: "Your profile",
     href: "/settings",
     description: "You can edit your personal data in here.",
@@ -128,7 +133,7 @@ const HomeNavigationMenu = () => {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/docs" legacyBehavior passHref>
+          <Link href="/services/contract" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               About & Report
             </NavigationMenuLink>

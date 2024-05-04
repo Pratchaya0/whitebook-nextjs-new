@@ -6,6 +6,7 @@ import LoginButton from "@/components/auth/login-button";
 import { Button } from "@/components/ui/button";
 import HomeNavigationMenu from "@/components/home/home-navigation-menu";
 import CartButton from "./cart-button";
+import { ThemeModeToggle } from "./theme-mode-toggle";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -33,6 +34,9 @@ const Header = ({ label = "E-book marketplace" }: HeaderProps) => {
         </div>
       </div>
       <div className="flex items-center justify-center gap-x-2">
+        <div>
+          <ThemeModeToggle />
+        </div>
         <div>
           <CartButton />
         </div>
