@@ -1,3 +1,5 @@
+"use server";
+
 import { db } from "@/lib/db";
 import { Book } from "@prisma/client";
 
@@ -29,7 +31,7 @@ export const getBookByBookId = async (bookId: string) => {
       include: {
         bookPreviewImages: true,
         reviews: true,
-        genreTags: true,
+        genreTagBooks: true,
       },
     });
 
@@ -53,7 +55,7 @@ export const getListBooksInCartByCartId = async (cartId: string) => {
 
     return books;
   } catch (error) {
-    console.error("error at getListBooksInCartByCartId = " + error)
+    console.error("error at getListBooksInCartByCartId = " + error);
     return null;
   }
 };

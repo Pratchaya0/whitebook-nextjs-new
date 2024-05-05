@@ -79,7 +79,7 @@ export const columns: ColumnDef<GenreTag>[] = [
       const data = row.original;
 
       return (
-        <div className="flex items-center justify-center gap-x-2">
+        <div className="flex items-right justify-end gap-x-2">
           <UpdateDialogButton title="Update">
             <UpdateGenreTagForm genreTag={data} />
           </UpdateDialogButton>

@@ -5,8 +5,6 @@ import { Book } from "@prisma/client";
 import { useEffect, useState } from "react";
 
 const ProductsPage = async () => {
-  const books = await getListBooks(true);
-
   return (
     <>
       <div className="flex items-center justify-between gap-x-8">
@@ -18,7 +16,7 @@ const ProductsPage = async () => {
         </div>
       </div>
       <div className="flex flex-col items-center justify-center gap-y-8">
-        <ProductsTable books={books as Book[]} />
+        <ProductsTable />
       </div>
     </>
   );
