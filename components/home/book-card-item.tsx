@@ -9,7 +9,7 @@ import {
 import { Book } from "@prisma/client";
 import Image from "next/image";
 import AddToCartButton from "@/components/home/add-to-cart-button";
-import ViewDialogButton from "@/components/home/view-dialog-button";
+import ViewAddDialogButton from "@/components/home/view-dialog-button";
 import { Button } from "@/components/ui/button";
 import { FaSistrix } from "react-icons/fa";
 
@@ -41,13 +41,13 @@ const BookCardItem = ({ book }: BookCardItemProps) => {
         </div>
       </CardContent>
       <CardFooter>
-        <ViewDialogButton bookId={book.id as string} asChild>
+        <ViewAddDialogButton bookId={book.id as string} asChild>
           <div className="flex items-center w-full gap-x-2">
             <Button size="lg" className="w-full" variant="outline">
               <FaSistrix className="h-5 w-5" />
             </Button>
           </div>
-        </ViewDialogButton>
+        </ViewAddDialogButton>
         <AddToCartButton bookId={book.id} />
       </CardFooter>
     </Card>

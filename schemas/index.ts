@@ -103,7 +103,7 @@ export const ReviewSchema = z.object({
 export const CategorySchema = z.object({
   categoryName: z.string(),
   categoryIcon: z.optional(z.string()),
-  userId: z.string(),
+  userId: z.optional(z.string()),
 });
 
 export const GenreTagSchema = z.object({

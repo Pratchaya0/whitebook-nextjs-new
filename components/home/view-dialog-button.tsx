@@ -2,17 +2,17 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import ViewDetail from "@/components/home/view-detail";
 
-interface ViewDialogButtonProps {
+interface ViewAddDialogButtonProps {
   children: React.ReactNode;
   bookId: string;
   asChild?: boolean;
 }
 
-const ViewDialogButton = ({
+const ViewAddDialogButton = ({
   children,
   bookId,
   asChild,
-}: ViewDialogButtonProps) => {
+}: ViewAddDialogButtonProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild={asChild}>{children}</DialogTrigger>
@@ -23,4 +23,4 @@ const ViewDialogButton = ({
   );
 };
 
-export default ViewDialogButton;
+export default ViewAddDialogButton;

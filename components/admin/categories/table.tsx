@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -35,6 +34,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Category } from "@prisma/client";
+import { FaAngleDown, FaBars, FaRedoAlt, FaTrashAlt } from "react-icons/fa";
+import UpdateDialogButton from "@/components/admin/update-dialog-button";
+import UpdateCategoryForm from "./update-category-form";
+import { toast } from "sonner";
+import { deleteCategory } from "@/actions/category";
+import { getListCategories } from "@/data/category";
+import { useEffect, useState } from "react";
 
 export const columns: ColumnDef<Category>[] = [
   {
@@ -66,13 +72,13 @@ export const columns: ColumnDef<Category>[] = [
       <div className="capitalize">{row.getValue("categoryName")}</div>
     ),
   },
-  {
-    accessorKey: "categoryIcon",
-    header: "Status",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("categoryIcon")}</div>
-    ),
-  },
+  // {
+  //   accessorKey: "categoryIcon",
+  //   header: "Icon",
+  //   cell: ({ row }) => (
+  //     <div className="capitalize">{row.getValue("categoryIcon")}</div>
+  //   ),
+  // },
   {
     accessorKey: "userId",
     header: "Create by",
@@ -84,28 +90,52 @@ export const columns: ColumnDef<Category>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const data = row.original;
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              {/* <MoreHorizontal className="h-4 w-4" /> */}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex items-center justify-center gap-x-2">
+          <UpdateDialogButton title="Update">
+            <UpdateCategoryForm category={data} />
+          </UpdateDialogButton>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <FaBars className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(data.id)}
+              >
+                Copy category ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  toast.promise(
+                    new Promise((resolve) => {
+                      resolve(deleteCategory(data.id));
+                    }),
+                    {
+                      loading: "Loading...",
+                      success: (data: any) => {
+                        return `${data.res as string}`;
+                      },
+                      error: "Oops! what's wrong?",
+                    }
+                  );
+                }}
+              >
+                <div className="w-full flex items-center justify-between gap-x-8 text-red-500 font-bold">
+                  <div>Delete</div>
+                  <FaTrashAlt />
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       );
     },
   },
@@ -115,15 +145,21 @@ interface CategoriesTableProps {
   categories: Category[];
 }
 
-const CategoriesTable = ({ categories }: CategoriesTableProps) => {
-  const data = categories;
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+const CategoriesTable = () => {
+  const [data, setData] = useState<Category[]>([]);
+  const category = async () => {
+    const data = await getListCategories();
+    setData(data as Category[]);
+  };
+
+  useEffect(() => {
+    category();
+  }, []);
+
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
@@ -146,42 +182,53 @@ const CategoriesTable = ({ categories }: CategoriesTableProps) => {
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
+      <div className="flex items-center justify-between py-4">
         <Input
           placeholder="Filter Name..."
-          value={(table.getColumn("categoryName")?.getFilterValue() as string) ?? ""}
+          value={
+            (table.getColumn("categoryName")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
             table.getColumn("categoryName")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns
-              {/* <ChevronDown className="ml-2 h-4 w-4" /> */}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex justify-center items-center gap-x-4">
+          <Button
+            variant="secondary"
+            className="ml-auto"
+            onClick={() => category()}
+          >
+            <FaRedoAlt />
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Columns
+                <FaAngleDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>

@@ -1,7 +1,9 @@
 const ExplorePage = () => {
-  return <div>
-    Hello explore
-  </div>;
+  return (
+    <div>
+      <h2>Explore</h2>
+    </div>
+  );
 };
 
 export default ExplorePage;

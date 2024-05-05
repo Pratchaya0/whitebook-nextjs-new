@@ -5,9 +5,14 @@ import { Order } from "@prisma/client";
 const OrdersPage = async () => {
   const orders = await getListOrders();
   return (
-    <div>
-      <OrdersTable orders={orders as Order[]} />
-    </div>
+    <>
+      <div>
+        <h2>Orders Management</h2>
+      </div>
+      <div className="flex flex-col items-center justify-center gap-y-8">
+        <OrdersTable orders={orders as Order[]} />
+      </div>
+    </>
   );
 };
 

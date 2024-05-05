@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 const CartPage = () => {
   const cartId = useCurrentCart();
   const [cartBooks, setCartBooks] = useState<Book[]>([]);
-  console.log(cartId);
 
   useEffect(() => {
     const getCartBooks = async () => {
@@ -21,9 +20,9 @@ const CartPage = () => {
     getCartBooks();
   }, [cartId]);
 
-  console.log(cartBooks);
   return (
     <div>
+      <h2>Your Carts</h2>
       <CartBookList cartId={cartId as string} />
     </div>
   );

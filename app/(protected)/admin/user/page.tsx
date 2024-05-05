@@ -5,9 +5,14 @@ import { User } from "@prisma/client";
 const UserPage = async () => {
   const users = await getListUsers();
   return (
-    <div>
-      <UsersTable users={users as User[]} />
-    </div>
+    <>
+      <div>
+        <h2>Users Management</h2>
+      </div>
+      <div className="flex flex-col items-center justify-center gap-y-8">
+        <UsersTable users={users as User[]} />
+      </div>
+    </>
   );
 };
 

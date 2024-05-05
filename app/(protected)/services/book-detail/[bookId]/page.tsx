@@ -12,7 +12,7 @@ const BookDetailPage = async ({ params }: { params: IParams }) => {
   console.log(book);
   return (
     <div>
-      Hello book details
+      <h2>{book?.name === "" ? "Book" : book?.name} Details</h2>
       <p>{JSON.stringify(book)}</p>
     </div>
   );

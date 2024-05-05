@@ -44,11 +44,6 @@ const LoginForm = () => {
     },
   });
 
-  const promise = () =>
-    new Promise((resolve) =>
-      setTimeout(() => resolve({ name: "Sonner" }), 2000)
-    );
-
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     // clear message
     setError("");
