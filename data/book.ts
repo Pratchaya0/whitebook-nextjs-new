@@ -66,6 +66,7 @@ export const getListBooksByUserId = async (userId: string) => {
       where: {
         bookBuyers: {
           some: {
+            isAvailable: true,
             userId: userId,
           },
         },
@@ -76,6 +77,29 @@ export const getListBooksByUserId = async (userId: string) => {
     });
 
     return books;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getBookByBookIdAndUserId = async (
+  bookId: string,
+  userId: string
+) => {
+  try {
+    const book = await db.book.findUnique({
+      where: {
+        id: bookId,
+        bookBuyers: {
+          some: {
+            isAvailable: true,
+            userId: userId,
+          },
+        },
+      },
+    });
+
+    return book;
   } catch (error) {
     return null;
   }

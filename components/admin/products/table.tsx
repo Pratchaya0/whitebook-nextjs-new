@@ -34,9 +34,27 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Book } from "@prisma/client";
-import { FaAngleDown, FaBars, FaRedoAlt } from "react-icons/fa";
+import {
+  FaAngleDown,
+  FaBars,
+  FaCreativeCommonsNc,
+  FaRedoAlt,
+  FaRegCheckCircle,
+  FaTrashAlt,
+} from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { getListBooks } from "@/data/book";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { deleteProduct, updateProductIsOnSale } from "@/actions/product";
+import UpdateDialogButton from "@/components/admin/update-dialog-button";
+import UpdateProductForm from "@/components/admin/products/update-product-form";
 
 export const columns: ColumnDef<Book>[] = [
   {
@@ -98,7 +116,13 @@ export const columns: ColumnDef<Book>[] = [
     accessorKey: "isOnSale",
     header: "Is On Sale",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("isOnSale")}</div>
+      <div className="capitalize">
+        {row.getValue("isOnSale") === true ? (
+          <Badge variant="green">On sale</Badge>
+        ) : (
+          <Badge variant="outline">Off sale</Badge>
+        )}
+      </div>
     ),
   },
   {
@@ -119,11 +143,76 @@ export const columns: ColumnDef<Book>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const data = row.original;
 
-      console.log(payment);
       return (
         <div className="flex items-right justify-end gap-x-2">
+          <UpdateDialogButton title="Update">
+            <UpdateProductForm book={data} />
+          </UpdateDialogButton>
+          <TooltipProvider>
+            {data.isOnSale ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="secondary"
+                    className="h-8 p-x-2"
+                    onClick={() => {
+                      toast.promise(
+                        new Promise((resolve) => {
+                          resolve(updateProductIsOnSale(data.id, false));
+                        }),
+                        {
+                          loading: "Loading...",
+                          success: (data: any) => {
+                            return `${data.res as string}`;
+                          },
+                          error: "Oops! what's wrong?",
+                        }
+                      );
+                    }}
+                  >
+                    <div className="flex items-center justify-center text-rose-500 gap-x-2">
+                      <FaCreativeCommonsNc className="h-3 w-3" />
+                    </div>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Make it off sale</p>
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="secondary"
+                    className="h-8 p-x-2"
+                    onClick={() => {
+                      toast.promise(
+                        new Promise((resolve) => {
+                          resolve(updateProductIsOnSale(data.id, true));
+                        }),
+                        {
+                          loading: "Loading...",
+                          success: (data: any) => {
+                            return `${data.res as string}`;
+                          },
+                          error: "Oops! what's wrong?",
+                        }
+                      );
+                    }}
+                  >
+                    <div className="flex items-center justify-center text-emerald-500 gap-x-2">
+                      <FaRegCheckCircle className="h-3 w-3" />
+                    </div>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Make it on sale</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </TooltipProvider>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -134,13 +223,34 @@ export const columns: ColumnDef<Book>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.id)}
+                onClick={() => navigator.clipboard.writeText(data.id)}
               >
-                Copy payment ID
+                Copy product ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
+              <DropdownMenuItem>View product detail</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  toast.promise(
+                    new Promise((resolve) => {
+                      resolve(deleteProduct(data.id));
+                    }),
+                    {
+                      loading: "Loading...",
+                      success: (data: any) => {
+                        return `${data.res as string}`;
+                      },
+                      error: "Oops! what's wrong?",
+                    }
+                  );
+                }}
+              >
+                <div className="w-full flex items-center justify-between gap-x-8 text-red-500 font-bold">
+                  <div>Delete</div>
+                  <FaTrashAlt />
+                </div>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

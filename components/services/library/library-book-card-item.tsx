@@ -11,13 +11,24 @@ import Image from "next/image";
 import AddToCartButton from "@/components/home/add-to-cart-button";
 import ViewAddDialogButton from "@/components/home/view-dialog-button";
 import { Button } from "@/components/ui/button";
-import { FaSistrix } from "react-icons/fa";
+import { FaBars, FaReadme, FaSistrix } from "react-icons/fa";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
 
 interface LibraryBookCardItemProps {
   book: Book;
 }
 
 const LibraryBookCardItem = ({ book }: LibraryBookCardItemProps) => {
+  const router = useRouter();
+
   return (
     <Card>
       <CardHeader className="text-center">
@@ -41,14 +52,41 @@ const LibraryBookCardItem = ({ book }: LibraryBookCardItemProps) => {
         </div>
       </CardContent>
       <CardFooter>
-        <ViewAddDialogButton bookId={book.id as string} asChild>
-          <div className="flex items-center w-full gap-x-2">
-            <Button size="lg" className="w-full" variant="outline">
-              <FaSistrix className="h-5 w-5" />
+        <div className="flex items-center justify-between gap-x-2">
+          <div>
+            <Button
+              variant="green"
+              size="lg"
+              onClick={() => {
+                router.push(`/services/read/${book.id}`);
+              }}
+            >
+              <div className="flex items-center justify-center gap-x-2">
+                Read
+                <FaReadme className="h-5 w-5" />
+              </div>
             </Button>
           </div>
-        </ViewAddDialogButton>
-        <AddToCartButton bookId={book.id} />
+          <div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="lg">
+                  <FaBars className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={() => navigator.clipboard.writeText(book.id)}
+                >
+                  Copy book ID
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>View book detail</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
       </CardFooter>
     </Card>
   );

@@ -37,6 +37,9 @@ import { User } from "@prisma/client";
 import { FaAngleDown, FaBars, FaRedoAlt } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { getListUsers } from "@/data/user";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import header from "@/components/auth/header";
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -62,6 +65,25 @@ export const columns: ColumnDef<User>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: "image",
+    header: "Image",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {
+          <Avatar>
+            <AvatarImage
+              src={
+                row.getValue("image") === null
+                  ? "https://github.com/shadcn.png"
+                  : row.getValue("image")
+              }
+            />
+          </Avatar>
+        }
+      </div>
+    ),
+  },
+  {
     accessorKey: "name",
     header: "Name",
     cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
@@ -82,13 +104,6 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
   },
   {
-    accessorKey: "image",
-    header: "Image Url",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("image")}</div>
-    ),
-  },
-  {
     accessorKey: "password",
     header: "Password",
     cell: ({ row }) => (
@@ -104,7 +119,13 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: "isTwoFactorEnabled",
     header: "Is 2FA",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("isTwoFactorEnabled")}</div>
+      <div className="capitalize">
+        {row.getValue("isTwoFactorEnabled") === true ? (
+          <Badge variant="green">Yes</Badge>
+        ) : (
+          <Badge variant="outline">No</Badge>
+        )}
+      </div>
     ),
   },
   {
@@ -116,6 +137,7 @@ export const columns: ColumnDef<User>[] = [
       console.log(payment);
       return (
         <div className="flex items-right justify-end gap-x-2">
+          {/* <FaUserAltSlash /> */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -128,11 +150,9 @@ export const columns: ColumnDef<User>[] = [
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(payment.id)}
               >
-                Copy payment ID
+                Copy user ID
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
+              {/* <DropdownMenuSeparator /> */}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

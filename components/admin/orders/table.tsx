@@ -34,9 +34,24 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Order } from "@prisma/client";
-import { FaAngleDown, FaBars, FaRedoAlt } from "react-icons/fa";
+import {
+  FaAngleDown,
+  FaBars,
+  FaCreativeCommonsNc,
+  FaRedoAlt,
+  FaRegCheckCircle,
+} from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { getListOrders } from "@/data/order";
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { toast } from "sonner";
+import { updateOrderIsPaid } from "@/actions/order";
 
 export const columns: ColumnDef<Order>[] = [
   {
@@ -68,7 +83,7 @@ export const columns: ColumnDef<Order>[] = [
   },
   {
     accessorKey: "amount",
-    header: "Amount",
+    header: "Amount (THB)",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("amount")}</div>
     ),
@@ -84,7 +99,13 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "isPaid",
     header: "Is Paid",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("isPaid")}</div>
+      <div className="capitalize">
+        {row.getValue("isPaid") === true ? (
+          <Badge variant="green">Paid</Badge>
+        ) : (
+          <Badge variant="outline">Waiting</Badge>
+        )}
+      </div>
     ),
   },
   {
@@ -128,10 +149,73 @@ export const columns: ColumnDef<Order>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const data = row.original;
 
       return (
         <div className="flex items-right justify-end gap-x-2">
+          <TooltipProvider>
+            {data.isPaid ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="secondary"
+                    className="h-8 p-x-2"
+                    onClick={() => {
+                      toast.promise(
+                        new Promise((resolve) => {
+                          resolve(updateOrderIsPaid(data.id, false));
+                        }),
+                        {
+                          loading: "Loading...",
+                          success: (data: any) => {
+                            return `${data.res as string}`;
+                          },
+                          error: "Oops! what's wrong?",
+                        }
+                      );
+                    }}
+                  >
+                    <div className="flex items-center justify-center text-rose-500 gap-x-2">
+                      <FaCreativeCommonsNc className="h-3 w-3" />
+                    </div>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Payment not receipt</p>
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="secondary"
+                    className="h-8 p-x-2"
+                    onClick={() => {
+                      toast.promise(
+                        new Promise((resolve) => {
+                          resolve(updateOrderIsPaid(data.id, true));
+                        }),
+                        {
+                          loading: "Loading...",
+                          success: (data: any) => {
+                            return `${data.res as string}`;
+                          },
+                          error: "Oops! what's wrong?",
+                        }
+                      );
+                    }}
+                  >
+                    <div className="flex items-center justify-center text-emerald-500 gap-x-2">
+                      <FaRegCheckCircle className="h-3 w-3" />
+                    </div>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Payment receipt</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </TooltipProvider>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -142,13 +226,12 @@ export const columns: ColumnDef<Order>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.id)}
+                onClick={() => navigator.clipboard.writeText(data.id)}
               >
-                Copy payment ID
+                Copy order ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
+              <DropdownMenuItem>View order detail</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

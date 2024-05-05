@@ -19,12 +19,12 @@ const serviceComponents: {
   href: string;
   description: string;
 }[] = [
-  {
-    title: "Explore",
-    href: "/services/explore",
-    description:
-      "If your want to find some interesting E-book. Let me help you.",
-  },
+  // {
+  //   title: "Explore",
+  //   href: "/services/explore",
+  //   description:
+  //     "If your want to find some interesting E-book. Let me help you.",
+  // },
   {
     title: "Your library",
     href: "/services/library",
@@ -43,11 +43,6 @@ const serviceComponents: {
 ];
 const adminComponents: { title: string; href: string; description: string }[] =
   [
-    {
-      title: "Add Product",
-      href: "/admin/add-product",
-      description: "You can add product here.",
-    },
     {
       title: "Products",
       href: "/admin/products",

@@ -26,14 +26,18 @@ import {
 import { getListCategories } from "@/data/category";
 import { BookSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Category } from "@prisma/client";
+import { Book, Category } from "@prisma/client";
 import { Label } from "@radix-ui/react-label";
 import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-const AddProductForm = () => {
+interface UpdateProductFormProps {
+  book: Book;
+}
+
+const UpdateProductForm = ({ book }: UpdateProductFormProps) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const fetchCategories = async () => {
     const data = await getListCategories();
@@ -225,4 +229,4 @@ const AddProductForm = () => {
   );
 };
 
-export default AddProductForm;
+export default UpdateProductForm;
