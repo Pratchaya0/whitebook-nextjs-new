@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -35,6 +34,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { GenreTag } from "@prisma/client";
+import { getListGenreTag } from "@/data/genre-tag";
+import { useEffect, useState } from "react";
+import { FaAngleDown, FaBars, FaRedoAlt, FaTrashAlt } from "react-icons/fa";
+import UpdateDialogButton from "@/components/admin/update-dialog-button";
+import UpdateGenreTagForm from "./update-genre-tag-form";
+import { deleteGenreTag } from "@/actions/genreTag";
+import { toast } from "sonner";
 
 export const columns: ColumnDef<GenreTag>[] = [
   {
@@ -70,46 +76,73 @@ export const columns: ColumnDef<GenreTag>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const data = row.original;
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              {/* <MoreHorizontal className="h-4 w-4" /> */}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex items-center justify-center gap-x-2">
+          <UpdateDialogButton title="Update">
+            <UpdateGenreTagForm genreTag={data} />
+          </UpdateDialogButton>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <FaBars className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(data.id)}
+              >
+                Copy payment ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  toast.promise(
+                    new Promise((resolve) => {
+                      resolve(deleteGenreTag(data.id));
+                    }),
+                    {
+                      loading: "Loading...",
+                      success: (data: any) => {
+                        return `${data.res as string}`;
+                      },
+                      error: "Oops! what's wrong?",
+                    }
+                  );
+                }}
+              >
+                <div className="w-full flex items-center justify-between gap-x-8 text-red-500 font-bold">
+                  <div>Delete</div>
+                  <FaTrashAlt />
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       );
     },
   },
 ];
 
-interface GenreTagTableProps {
-  genreTags: GenreTag[];
-}
+const GenreTagTable = () => {
+  const [data, setData] = useState<GenreTag[]>([]);
 
-const GenreTagTable = ({ genreTags }: GenreTagTableProps) => {
-  const data = genreTags;
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  const genreTag = async () => {
+    const data = await getListGenreTag();
+    setData(data as GenreTag[]);
+  };
+
+  useEffect(() => {
+    genreTag();
+  }, []);
+
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
@@ -132,7 +165,7 @@ const GenreTagTable = ({ genreTags }: GenreTagTableProps) => {
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
+      <div className="flex items-center justify-between py-4">
         <Input
           placeholder="Filter Name..."
           value={
@@ -143,33 +176,42 @@ const GenreTagTable = ({ genreTags }: GenreTagTableProps) => {
           }
           className="max-w-sm"
         />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns
-              {/* <ChevronDown className="ml-2 h-4 w-4" /> */}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex justify-center items-center gap-x-4">
+          <Button
+            variant="secondary"
+            className="ml-auto"
+            onClick={() => genreTag()}
+          >
+            <FaRedoAlt />
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Columns
+                <FaAngleDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>

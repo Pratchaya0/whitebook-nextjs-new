@@ -24,10 +24,7 @@ import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
 
 const AddCategoryForm = () => {
-  useEffect(() => {});
   const user = useCurrentUser();
-
-  console.log(user?.id);
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -43,7 +40,6 @@ const AddCategoryForm = () => {
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof CategorySchema>) {
-    console.log(values);
     // clear message
     setError("");
     setSuccess("");

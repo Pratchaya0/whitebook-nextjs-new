@@ -141,10 +141,6 @@ export const columns: ColumnDef<Category>[] = [
   },
 ];
 
-interface CategoriesTableProps {
-  categories: Category[];
-}
-
 const CategoriesTable = () => {
   const [data, setData] = useState<Category[]>([]);
   const category = async () => {

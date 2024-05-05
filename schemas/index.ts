@@ -108,7 +108,7 @@ export const CategorySchema = z.object({
 
 export const GenreTagSchema = z.object({
   genreTagName: z.string(),
-  bookId: z.string(),
+  userId: z.string(),
 });
 
 export const BookBuyerSchema = z.object({

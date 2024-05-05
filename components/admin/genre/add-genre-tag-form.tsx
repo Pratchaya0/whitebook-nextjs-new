@@ -14,37 +14,32 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CategorySchema } from "@/schemas";
+import { GenreTagSchema } from "@/schemas";
 import * as z from "zod";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { useState, useTransition } from "react";
-import { updateCategory } from "@/actions/category";
+import { useEffect, useState, useTransition } from "react";
+import { addNewCategory } from "@/actions/category";
 import { toast } from "sonner";
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
-import { Category } from "@prisma/client";
+import { addNewGenreTag } from "@/actions/genreTag";
 
-interface UpdateCategoryFormProps {
-  category: Category;
-}
-
-const UpdateCategoryForm = ({ category }: UpdateCategoryFormProps) => {
+const AddGenreTagForm = () => {
   const user = useCurrentUser();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   // 1. Define your form.
-  const form = useForm<z.infer<typeof CategorySchema>>({
-    resolver: zodResolver(CategorySchema),
+  const form = useForm<z.infer<typeof GenreTagSchema>>({
+    resolver: zodResolver(GenreTagSchema),
     defaultValues: {
-      categoryName: category.categoryName as string | undefined,
-      categoryIcon: "",
+      genreTagName: "",
       userId: user?.id as string,
     },
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof CategorySchema>) {
+  function onSubmit(values: z.infer<typeof GenreTagSchema>) {
     // clear message
     setError("");
     setSuccess("");
@@ -52,7 +47,7 @@ const UpdateCategoryForm = ({ category }: UpdateCategoryFormProps) => {
     toast.promise(
       new Promise((resolve) => {
         startTransition(() => {
-          updateCategory(values, category.id)
+          addNewGenreTag(values)
             .then((res) => {
               if (res?.error) {
                 form.reset();
@@ -83,19 +78,19 @@ const UpdateCategoryForm = ({ category }: UpdateCategoryFormProps) => {
   return (
     <Card className="w-[450px]">
       <CardHeader>
-        <CardTitle>Create category</CardTitle>
+        <CardTitle>Create genre tag</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
-              name="categoryName"
+              name="genreTagName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="New category name..." {...field} />
+                    <Input placeholder="New genre tag name..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -129,4 +124,4 @@ const UpdateCategoryForm = ({ category }: UpdateCategoryFormProps) => {
   );
 };
 
-export default UpdateCategoryForm;
+export default AddGenreTagForm;

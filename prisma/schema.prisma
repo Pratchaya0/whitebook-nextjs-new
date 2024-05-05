@@ -46,6 +46,7 @@ model User {
   categories  Category[]
   boughtBooks BookBuyer[]
   orders      Order[]
+  genreTags   GenreTag[]
 }
 
 model UserRole {
@@ -103,10 +104,10 @@ model Book {
   bookPreviewImages BookPreviewImage[]
   reviews           Review[]
   Category          Category?          @relation(fields: [categoryId], references: [id])
-  genreTags         GenreTag[]
   bookBuyers        BookBuyer[]
   orderBooks        OrderBook[]
   cardBooks         CartBook[]
+  genreTagBooks     GenreTagBook[]
 }
 
 model BookPreviewImage {
@@ -138,11 +139,20 @@ model Category {
 }
 
 model GenreTag {
-  id           String   @id @default(cuid())
-  genreTagName String?  @unique
-  bookId       String?
-  createdDate  DateTime @default(now())
-  Book         Book?    @relation(fields: [bookId], references: [id])
+  id            String         @id @default(cuid())
+  genreTagName  String?        @unique
+  userId        String?
+  createdDate   DateTime       @default(now())
+  genreTagBooks GenreTagBook[]
+  User          User?          @relation(fields: [userId], references: [id])
+}
+
+model GenreTagBook {
+  id         String    @id @default(cuid())
+  GenreTag   GenreTag? @relation(fields: [genreTagId], references: [id])
+  genreTagId String?
+  Book       Book?     @relation(fields: [bookId], references: [id])
+  bookId     String?
 }
 
 model BookBuyer {

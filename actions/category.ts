@@ -27,7 +27,7 @@ export const addNewCategory = async (
     return { error: "Oops! something went wrong!" };
   }
 
-  return { success: "Category is Added!" };
+  return { success: "Category is added!" };
 };
 
 export const updateCategory = async (
@@ -55,7 +55,7 @@ export const updateCategory = async (
     return { error: "Oops! something went wrong!" };
   }
 
-  return { success: "Category is Updated!" };
+  return { success: `Category id="${categoryId}" updated!` };
 };
 
 export const deleteCategory = async (categoryId: string) => {
