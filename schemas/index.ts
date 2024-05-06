@@ -133,8 +133,12 @@ export const OrderBookSchema = z.object({
 // จัดการข้อมูลเว็บ
 export const WebInformationSchema = z.object({
   name: z.optional(z.string()),
-  email: z.optional(z.string()),
-  phone: z.optional(z.string()),
+  email: z.optional(z.string().email()),
+  phone: z.optional(
+    z.string().max(10, {
+      message: "Invalid Phone number",
+    })
+  ),
   facebook: z.optional(z.string()),
   line: z.optional(z.string()),
 });
@@ -142,7 +146,7 @@ export const WebInformationSchema = z.object({
 export const PaymentInformationSchema = z.object({
   paymentName: z.string(),
   paymentCode: z.optional(z.string()),
-  paymentImageUrl: z.string(),
+  paymentImageUrl: z.optional(z.string()),
 });
 
 export const AdvertisementSchema = z.object({

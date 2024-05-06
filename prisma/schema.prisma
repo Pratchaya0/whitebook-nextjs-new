@@ -187,22 +187,19 @@ model OrderBook {
 
 // จัดการข้อมูลเว็บ
 model WebInformation {
-  id                  String               @id @default("fixid")
-  name                String?
-  email               String?
-  phone               String?
-  facebook            String?
-  line                String?
-  paymentInfomrmation PaymentInformation[]
+  id       String  @id @default("fixid")
+  name     String?
+  email    String?
+  phone    String?
+  facebook String?
+  line     String?
 }
 
 model PaymentInformation {
-  id               String          @id @default(cuid())
-  paymentName      String?
-  paymentCode      String?
-  paymentImageUrl  String?
-  WebInformation   WebInformation? @relation(fields: [webInformationId], references: [id])
-  webInformationId String          @default("fixid")
+  id              String  @id @default(cuid())
+  paymentName     String?
+  paymentCode     String?
+  paymentImageUrl String?
 }
 
 // จัดการข้อมูลโฆษณา

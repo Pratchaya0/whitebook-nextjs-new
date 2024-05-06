@@ -75,7 +75,11 @@ const adminComponents: { title: string; href: string; description: string }[] =
     },
   ];
 
-const HomeNavigationMenu = () => {
+interface HomeNavigationMenuProps {
+  webName: string;
+}
+
+const HomeNavigationMenu = ({ webName }: HomeNavigationMenuProps) => {
   return (
     <NavigationMenu>
       <NavigationMenuList>
@@ -91,7 +95,7 @@ const HomeNavigationMenu = () => {
                   >
                     {/* <Icons.logo className="h-6 w-6" /> */}
                     <div className="mb-2 mt-4 text-lg font-medium">
-                      Whitebook
+                      {webName}
                     </div>
                     <p className="text-sm leading-tight text-muted-foreground">
                       E-book marketplace for everyone.

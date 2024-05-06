@@ -8,6 +8,10 @@ import {
 } from "@/components/ui/card";
 import Header from "@/components/home/header";
 import BackButton from "@/components/auth/back-button";
+import Footer from "@/components/home/footer";
+import { useEffect, useState, useTransition } from "react";
+import { getWebInformation } from "@/data/webinfo";
+import { WebInformation } from "@prisma/client";
 
 interface CardWrapperProps {
   children: React.ReactNode;
@@ -20,15 +24,30 @@ const CardWrapper = ({
   headerLabel,
   showFooter,
 }: CardWrapperProps) => {
+  const [data, setData] = useState<WebInformation>();
+  const fetchWebInfo = async () => {
+    const data = await getWebInformation();
+    setData(data as WebInformation);
+  };
+  const [isPending, startTransition] = useTransition();
+  useEffect(() => {
+    startTransition(() => {
+      fetchWebInfo();
+    });
+  }, []);
+
   return (
     <Card className="w-[100vw] h-[100vh] shadow-md">
-      <CardHeader className="pb-1">
-        <Header label={headerLabel} />
+      <CardHeader className="pb-1 shadow-md">
+        <Header label={headerLabel} webName={data?.name as string} />
       </CardHeader>
       <CardContent className="p-0">{children}</CardContent>
       {showFooter && (
-        <CardFooter className="pt-1">
-          <BackButton label={"temp"} href={"temp"} />
+        <CardFooter className="pt-1 shadow-md">
+          <div className="w-full flex items-center justify-center mt-4">
+            {isPending && "Loading"}
+            {!isPending && <Footer data={data as WebInformation} />}
+          </div>
         </CardFooter>
       )}
     </Card>

@@ -60,7 +60,7 @@ const CartCheckoutForm = () => {
     console.log("upload slip");
     if (imageLocal == null) return;
 
-    const imageRef = ref(storage, `epubs/${v4()}`);
+    const imageRef = ref(storage, `payments/${v4()}`);
     uploadBytes(imageRef, imageLocal).then((url) => {
       const refFIle = ref(storage, url.metadata.fullPath);
       getDownloadURL(refFIle)
@@ -91,6 +91,8 @@ const CartCheckoutForm = () => {
     uploadSlip();
 
     values.paymentImageUrl = imageUrl as string;
+    console.log(values);
+
     toast.promise(
       new Promise((resolve, reject) => {
         createOrder(values, cartId as string)

@@ -15,9 +15,10 @@ const font = Poppins({
 
 interface HeaderProps {
   label?: string;
+  webName: string;
 }
 
-const Header = ({ label = "E-book marketplace" }: HeaderProps) => {
+const Header = ({ label = "E-book marketplace", webName }: HeaderProps) => {
   const users = useCurrentUser();
 
   return (
@@ -25,12 +26,12 @@ const Header = ({ label = "E-book marketplace" }: HeaderProps) => {
       <div className="flex gap-x-3 justify-center items-center">
         <div className="w-full flex flex-col gap-y-1 items-left justify-start">
           <h1 className={cn("text-3xl font-semibold", font.className)}>
-            Whitebook
+            {webName}
           </h1>
           <p className="text-muted-foreground text-sm">{label}</p>
         </div>
         <div>
-          <HomeNavigationMenu />
+          <HomeNavigationMenu webName={webName} />
         </div>
       </div>
       <div className="flex items-center justify-center gap-x-2">
