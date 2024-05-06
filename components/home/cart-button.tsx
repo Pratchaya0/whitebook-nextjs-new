@@ -10,26 +10,29 @@ import { useRouter } from "next/navigation";
 
 const CartButton = () => {
   const cardId = useCurrentCart();
-  const [numOfBookInCart, setNumOfBookInCart] = useState<number>(0);
+  const [numOfBookInCart, setNumOfBookInCart] = useState<number>();
   const router = useRouter();
 
+  const getCartCount = async () => {
+    const count = await getCountBookInCartByCartId(cardId as string);
+    setNumOfBookInCart(count as number);
+  };
+
   useEffect(() => {
-    const count = getCountBookInCartByCartId(cardId as string);
-    console.log(count);
-    setNumOfBookInCart(count as unknown as number);
+    getCartCount();
   }, [cardId]);
 
   return (
     <Button
       size="lg"
-      className="w-full"
+      className="px-3"
       variant="outline"
       onClick={() => {
-        console.log("go to cart page");
+        router.push("/services/cart");
       }}
     >
-      <FaShoppingBasket className="h-5 w-5" />
-      <Badge variant="outline">{numOfBookInCart.toString()}</Badge>
+      <FaShoppingBasket className="h-5 w-5 mr-1" />
+      <Badge variant="outline">{numOfBookInCart}</Badge>
     </Button>
   );
 };

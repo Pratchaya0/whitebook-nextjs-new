@@ -1,10 +1,11 @@
 "use client";
 
-import { addToCart } from "@/actions/add-to-cart";
+import { addToCart } from "@/actions/cart";
 import { Button } from "@/components/ui/button";
+import { checkIfBookInBuyerBookByBookId } from "@/data/bayer-book";
 import { useCurrentCart } from "@/hooks/use-current-cart";
-import { useState, useTransition } from "react";
-import { FaShoppingBasket } from "react-icons/fa";
+import { useEffect, useState, useTransition } from "react";
+import { FaFunnelDollar, FaShoppingBasket } from "react-icons/fa";
 import { toast } from "sonner";
 
 interface AddToCartButtonProps {
@@ -13,32 +14,25 @@ interface AddToCartButtonProps {
 
 const AddToCartButton = ({ bookId }: AddToCartButtonProps) => {
   const cartId = useCurrentCart();
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+  const [isBookBought, setIsBookBought] = useState<boolean>(false);
+  const checkBook = async () => {
+    const data = await checkIfBookInBuyerBookByBookId(bookId as string);
+    setIsBookBought(data);
+  };
+
+  useEffect(() => {
+    startTransition(() => {
+      checkBook();
+    });
+  }, []);
 
   const onClick = () => {
-    setError("");
-    setSuccess("");
-
     toast.promise(
       new Promise((resolve) => {
         startTransition(() => {
-          addToCart(cartId as string, bookId as string)
-            .then((res) => {
-              if (res?.error) {
-                setError(res?.error);
-              }
-
-              if (res?.success) {
-                setSuccess(res?.success);
-              }
-            })
-            .catch(() => {
-              setError("Something went wrong!");
-            });
+          resolve(addToCart(cartId as string, bookId as string));
         });
-        resolve({ res: "Temp" });
       }),
       {
         loading: "Loading...",
@@ -53,6 +47,7 @@ const AddToCartButton = ({ bookId }: AddToCartButtonProps) => {
   return (
     <div className="flex items-center w-full gap-x-2">
       <Button
+        disabled={isPending || isBookBought}
         size="lg"
         className="w-full"
         variant="outline"
@@ -60,7 +55,11 @@ const AddToCartButton = ({ bookId }: AddToCartButtonProps) => {
           onClick();
         }}
       >
-        <FaShoppingBasket className="h-5 w-5" />
+        {isBookBought ? (
+          <FaFunnelDollar className="h-5 w-5" />
+        ) : (
+          <FaShoppingBasket className="h-5 w-5" />
+        )}
       </Button>
     </div>
   );

@@ -52,6 +52,7 @@ import {
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { updateOrderIsPaid } from "@/actions/order";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 export const columns: ColumnDef<Order>[] = [
   {
@@ -163,7 +164,13 @@ export const columns: ColumnDef<Order>[] = [
                     onClick={() => {
                       toast.promise(
                         new Promise((resolve) => {
-                          resolve(updateOrderIsPaid(data.id, false));
+                          resolve(
+                            updateOrderIsPaid(
+                              data.userId as string,
+                              data.id,
+                              false
+                            )
+                          );
                         }),
                         {
                           loading: "Loading...",
@@ -193,7 +200,13 @@ export const columns: ColumnDef<Order>[] = [
                     onClick={() => {
                       toast.promise(
                         new Promise((resolve) => {
-                          resolve(updateOrderIsPaid(data.id, true));
+                          resolve(
+                            updateOrderIsPaid(
+                              data.userId as string,
+                              data.id,
+                              true
+                            )
+                          );
                         }),
                         {
                           loading: "Loading...",

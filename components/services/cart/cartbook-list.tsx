@@ -1,3 +1,6 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -8,88 +11,122 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getListCartBookByCartId } from "@/data/cart-book";
-import { Cart } from "@prisma/client";
+import {
+  getListBooksInCartByCartId,
+  getSumOfAllBookInCartByCartId,
+} from "@/data/book";
+import { useCurrentCart } from "@/hooks/use-current-cart";
+import { Book, CartBook } from "@prisma/client";
+import { useEffect, useState, useTransition } from "react";
+import { FaRedoAlt, FaTrashAlt } from "react-icons/fa";
+import CartCheckoutButton from "@/components/services/cart/cart-checkout-button";
+import { deleteBookFromCartByCartIdAndBookId } from "@/actions/cart";
+import { toast } from "sonner";
+import CartCheckoutForm from "@/components/services/cart/cart-checkout-form";
 
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-];
+const CartBookList = () => {
+  const cartId = useCurrentCart();
+  const [books, setBooks] = useState<Book[]>([]);
+  const [sumOfAllBooks, setSumOfAllBooks] = useState<number>();
+  const [isPending, startTransition] = useTransition();
 
-interface CartBookListProps {
-  cartId: string;
-}
+  const fetchBooks = async () => {
+    const data = await getListBooksInCartByCartId(cartId as string);
+    setBooks(data as Book[]);
+  };
+  const fetchSumOfAllBooks = async () => {
+    const data = await getSumOfAllBookInCartByCartId(cartId as string);
+    setSumOfAllBooks(data as number);
+  };
 
-const CartBookList = ({ cartId }: CartBookListProps) => {
-//   const cartBooks = await getListCartBookByCartId(cartId);
+  useEffect(() => {
+    startTransition(() => {
+      fetchBooks();
+      fetchSumOfAllBooks();
+    });
+  }, []);
+
   return (
-    <Table>
-      <TableCaption>A list of your recent invoices.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">Invoice</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Method</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {invoices.map((invoice) => (
-          <TableRow key={invoice.invoice}>
-            <TableCell className="font-medium">{invoice.invoice}</TableCell>
-            <TableCell>{invoice.paymentStatus}</TableCell>
-            <TableCell>{invoice.paymentMethod}</TableCell>
-            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+    <>
+      <Table>
+        {/* <TableCaption>A list of your book in cart</TableCaption> */}
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">Id</TableHead>
+            <TableHead>Name</TableHead>
+            {/* <TableHead>Method</TableHead> */}
+            <TableHead className="text-right">Amount</TableHead>
+            <TableHead className="w-[50px]"></TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-      <TableFooter>
-        <TableRow>
-          <TableCell colSpan={3}>Total</TableCell>
-          <TableCell className="text-right">$2,500.00</TableCell>
-        </TableRow>
-      </TableFooter>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {books.map((book) => (
+            <TableRow key={book.id}>
+              <TableCell className="font-medium">{book.id}</TableCell>
+              <TableCell>{book.description}</TableCell>
+              {/* <TableCell>{book.price}</TableCell> */}
+              <TableCell className="text-right">{book.price}</TableCell>
+              <TableCell>
+                <Button
+                  variant="ghost"
+                  className="h-8 w-8 p-0"
+                  disabled={isPending}
+                  onClick={() => {
+                    toast.promise(
+                      new Promise((resolve) => {
+                        resolve(
+                          deleteBookFromCartByCartIdAndBookId(
+                            cartId as string,
+                            book.id
+                          )
+                        );
+                      }),
+                      {
+                        loading: "Loading...",
+                        success: (data: any) => {
+                          return `${data.res as string}`;
+                        },
+                        error: "Oops! what's wrong?",
+                      }
+                    );
+                  }}
+                >
+                  <FaTrashAlt className="h-3 w-3 p-0 m-0 text-red-500 font-bold" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={2}>Total</TableCell>
+            <TableCell className="text-right">{sumOfAllBooks} ฿</TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+      <div className="flex justify-end items-center mt-3 gap-x-2">
+        <Button
+          variant="secondary"
+          className="ml-auto"
+          disabled={isPending}
+          onClick={() => {
+            startTransition(() => {
+              fetchBooks();
+              fetchSumOfAllBooks();
+            });
+          }}
+        >
+          <FaRedoAlt />
+        </Button>
+        {isPending || sumOfAllBooks === 0 ? (
+          <div></div>
+        ) : (
+          <CartCheckoutButton>
+            <CartCheckoutForm />
+          </CartCheckoutButton>
+        )}
+      </div>
+    </>
   );
 };
 

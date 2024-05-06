@@ -22,10 +22,10 @@ export const getCountBookInCartByCartId = async (cartId: string) => {
       },
     });
 
-    console.log(numOfBooks);
-
-    return numOfBooks;
+    return numOfBooks as number;
   } catch (error) {
-    return 0;
+    return 0 as number;
   }
 };
+
+

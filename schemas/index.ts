@@ -119,7 +119,7 @@ export const BookBuyerSchema = z.object({
 
 // จัดการข้อมูลการสั่งซื้อ
 export const OrderSchema = z.object({
-  amount: z.string(),
+  amount: z.number(),
   paymentImageUrl: z.optional(z.string()),
   isPaid: z.optional(z.string()),
   userId: z.string(),

@@ -55,8 +55,32 @@ export const getListBooksInCartByCartId = async (cartId: string) => {
 
     return books;
   } catch (error) {
-    console.error("error at getListBooksInCartByCartId = " + error);
     return null;
+  }
+};
+
+export const getSumOfAllBookInCartByCartId = async (cartId: string) => {
+  try {
+    const books = await db.book.findMany({
+      where: {
+        cardBooks: {
+          some: {
+            cartId: cartId,
+          },
+        },
+      },
+    });
+
+    let amount = 0;
+    books.forEach((book) => {
+      if (book.price !== null) {
+        amount += parseFloat(book.price);
+      }
+    });
+
+    return amount as number;
+  } catch (error) {
+    return 0 as number;
   }
 };
 

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -11,13 +13,30 @@ import Image from "next/image";
 import AddToCartButton from "@/components/home/add-to-cart-button";
 import ViewAddDialogButton from "@/components/home/view-dialog-button";
 import { Button } from "@/components/ui/button";
-import { FaSistrix } from "react-icons/fa";
+import { FaReadme, FaSistrix } from "react-icons/fa";
+import { useEffect, useState, useTransition } from "react";
+import { checkIfIsAvailableByBookId } from "@/data/bayer-book";
+import { useRouter } from "next/navigation";
 
 interface BookCardItemProps {
   book: Book;
 }
 
 const BookCardItem = ({ book }: BookCardItemProps) => {
+  const [isYourOwnBook, setIsYourOwnBook] = useState<boolean>(false);
+  const [isPending, startTransition] = useTransition();
+  const checkIsYourOwnBook = async () => {
+    const data = await checkIfIsAvailableByBookId(book.id);
+    setIsYourOwnBook(data);
+  };
+  const router = useRouter();
+
+  useEffect(() => {
+    startTransition(() => {
+      checkIsYourOwnBook();
+    });
+  }, []);
+
   return (
     <Card>
       <CardHeader className="text-center">
@@ -41,14 +60,36 @@ const BookCardItem = ({ book }: BookCardItemProps) => {
         </div>
       </CardContent>
       <CardFooter>
-        <ViewAddDialogButton bookId={book.id as string} asChild>
-          <div className="flex items-center w-full gap-x-2">
-            <Button size="lg" className="w-full" variant="outline">
-              <FaSistrix className="h-5 w-5" />
-            </Button>
-          </div>
-        </ViewAddDialogButton>
-        <AddToCartButton bookId={book.id} />
+        {isPending && (
+          <div className="w-full flex justify-center items-center">Loading...</div>
+        )}
+        {!isPending && !isYourOwnBook && (
+          <>
+            <ViewAddDialogButton bookId={book.id as string} asChild>
+              <div className="flex items-center w-full gap-x-2">
+                <Button size="lg" className="w-full" variant="outline">
+                  <FaSistrix className="h-5 w-5" />
+                </Button>
+              </div>
+            </ViewAddDialogButton>
+            <AddToCartButton bookId={book.id} />
+          </>
+        )}
+        {!isPending && isYourOwnBook && (
+          <Button
+            variant="green"
+            className="w-full"
+            size="lg"
+            onClick={() => {
+              router.push(`/services/read/${book.id}`);
+            }}
+          >
+            <div className="flex items-center justify-center gap-x-2">
+              Read
+              <FaReadme className="h-5 w-5" />
+            </div>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
