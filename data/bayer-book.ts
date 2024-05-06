@@ -2,10 +2,14 @@
 
 import { db } from "@/lib/db";
 
-export const checkIfBookInBuyerBookByBookId = async (bookId: string) => {
+export const checkIfBookInBuyerBookByBookId = async (
+  bookId: string,
+  userId: string
+) => {
   const isExistBuyerBook = await db.bookBuyer.findFirst({
     where: {
       bookId: bookId,
+      userId: userId,
     },
   });
 
@@ -16,10 +20,14 @@ export const checkIfBookInBuyerBookByBookId = async (bookId: string) => {
   }
 };
 
-export const checkIfIsAvailableByBookId = async (bookId: string) => {
+export const checkIfIsAvailableByBookId = async (
+  bookId: string,
+  userId: string
+) => {
   const isExistBuyerBook = await db.bookBuyer.findFirst({
     where: {
       bookId: bookId,
+      userId: userId,
       isAvailable: true,
     },
   });

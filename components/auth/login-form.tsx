@@ -50,13 +50,14 @@ const LoginForm = () => {
     setSuccess("");
 
     toast.promise(
-      new Promise((resolve) => {
+      new Promise((resolve, reject) => {
         startTransition(() => {
           login(values, callbackUrl)
             .then((res) => {
               if (res?.error) {
                 form.reset();
                 setError(res?.error);
+                reject();
               }
 
               if (res?.success) {
@@ -71,8 +72,8 @@ const LoginForm = () => {
             .catch(() => {
               setError("Something went wrong!");
             });
+          resolve({ res: "Temp" });
         });
-        resolve({ res: "Temp" });
       }),
       {
         loading: "Loading...",

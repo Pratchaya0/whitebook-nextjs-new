@@ -13,6 +13,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { useCurrentRole } from "@/hooks/use-current-role";
 
 const serviceComponents: {
   title: string;
@@ -80,6 +81,7 @@ interface HomeNavigationMenuProps {
 }
 
 const HomeNavigationMenu = ({ webName }: HomeNavigationMenuProps) => {
+  const role = useCurrentRole();
   return (
     <NavigationMenu>
       <NavigationMenuList>
@@ -115,22 +117,25 @@ const HomeNavigationMenu = ({ webName }: HomeNavigationMenuProps) => {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Management</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-              {adminComponents.map((component) => (
-                <ListItem
-                  key={component.title}
-                  title={component.title}
-                  href={component.href}
-                >
-                  {component.description}
-                </ListItem>
-              ))}
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
+        {role === "ADMIN" && (
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>Management</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                {adminComponents.map((component) => (
+                  <ListItem
+                    key={component.title}
+                    title={component.title}
+                    href={component.href}
+                  >
+                    {component.description}
+                  </ListItem>
+                ))}
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        )}
+
         {/* <NavigationMenuItem>
           <Link href="/services/contract" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>

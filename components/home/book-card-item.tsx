@@ -17,16 +17,18 @@ import { FaReadme, FaSistrix } from "react-icons/fa";
 import { useEffect, useState, useTransition } from "react";
 import { checkIfIsAvailableByBookId } from "@/data/bayer-book";
 import { useRouter } from "next/navigation";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface BookCardItemProps {
   book: Book;
 }
 
 const BookCardItem = ({ book }: BookCardItemProps) => {
+  const user = useCurrentUser();
   const [isYourOwnBook, setIsYourOwnBook] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
   const checkIsYourOwnBook = async () => {
-    const data = await checkIfIsAvailableByBookId(book.id);
+    const data = await checkIfIsAvailableByBookId(book.id, user?.id as string);
     setIsYourOwnBook(data);
   };
   const router = useRouter();
@@ -61,7 +63,9 @@ const BookCardItem = ({ book }: BookCardItemProps) => {
       </CardContent>
       <CardFooter>
         {isPending && (
-          <div className="w-full flex justify-center items-center">Loading...</div>
+          <div className="w-full flex justify-center items-center">
+            Loading...
+          </div>
         )}
         {!isPending && !isYourOwnBook && (
           <>
