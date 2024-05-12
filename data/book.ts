@@ -28,11 +28,6 @@ export const getBookByBookId = async (bookId: string) => {
       where: {
         id: bookId,
       },
-      include: {
-        bookPreviewImages: true,
-        reviews: true,
-        genreTagBooks: true,
-      },
     });
 
     return book;
@@ -126,5 +121,48 @@ export const getBookByBookIdAndUserId = async (
     return book;
   } catch (error) {
     return null;
+  }
+};
+
+export const getListBooksByOrderId = async (orderId: string) => {
+  try {
+    const books = await db.book.findMany({
+      where: {
+        orderBooks: {
+          some: {
+            orderId: orderId,
+          },
+        },
+      },
+    });
+
+    return books;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getSumOfListBooksByOrderId = async (orderId: string) => {
+  try {
+    const books = await db.book.findMany({
+      where: {
+        orderBooks: {
+          some: {
+            orderId: orderId,
+          },
+        },
+      },
+    });
+
+    let amount = 0;
+    books.forEach((book) => {
+      if (book.price !== null) {
+        amount += parseFloat(book.price);
+      }
+    });
+
+    return amount as number;
+  } catch (error) {
+    return 0 as number;
   }
 };

@@ -42,7 +42,7 @@ import {
   FaRegCheckCircle,
 } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { getListOrders } from "@/data/order";
+import { getListOrders, getOrderByUserId } from "@/data/order";
 import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
@@ -155,114 +155,38 @@ export const columns: ColumnDef<Order>[] = [
       const router = useRouter();
 
       return (
-        <div className="flex items-right justify-end gap-x-2">
-          <TooltipProvider>
-            {data.isPaid ? (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="secondary"
-                    className="h-8 p-x-2"
-                    onClick={() => {
-                      toast.promise(
-                        new Promise((resolve) => {
-                          resolve(
-                            updateOrderIsPaid(
-                              data.userId as string,
-                              data.id,
-                              false
-                            )
-                          );
-                        }),
-                        {
-                          loading: "Loading...",
-                          success: (data: any) => {
-                            return `${data.res as string}`;
-                          },
-                          error: "Oops! what's wrong?",
-                        }
-                      );
-                    }}
-                  >
-                    <div className="flex items-center justify-center text-rose-500 gap-x-2">
-                      <FaCreativeCommonsNc className="h-3 w-3" />
-                    </div>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Payment not receipt</p>
-                </TooltipContent>
-              </Tooltip>
-            ) : (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="secondary"
-                    className="h-8 p-x-2"
-                    onClick={() => {
-                      toast.promise(
-                        new Promise((resolve) => {
-                          resolve(
-                            updateOrderIsPaid(
-                              data.userId as string,
-                              data.id,
-                              true
-                            )
-                          );
-                        }),
-                        {
-                          loading: "Loading...",
-                          success: (data: any) => {
-                            return `${data.res as string}`;
-                          },
-                          error: "Oops! what's wrong?",
-                        }
-                      );
-                    }}
-                  >
-                    <div className="flex items-center justify-center text-emerald-500 gap-x-2">
-                      <FaRegCheckCircle className="h-3 w-3" />
-                    </div>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Payment receipt</p>
-                </TooltipContent>
-              </Tooltip>
-            )}
-          </TooltipProvider>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <FaBars className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(data.id)}
-              >
-                Copy order ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => router.push(`/services/order-detail/${data.id}`)}
-              >
-                View order detail
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <FaBars className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => navigator.clipboard.writeText(data.id)}
+            >
+              Copy order ID
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => router.push(`/services/order-detail/${data.id}`)}
+            >
+              View order detail
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       );
     },
   },
 ];
 
-const OrdersTable = () => {
+const YourOrderHistoryTable = () => {
+  const user = useCurrentUser();
   const [data, setData] = useState<Order[]>([]);
   const order = async () => {
-    const data = await getListOrders();
+    const data = await getOrderByUserId(user?.id as string);
     setData(data as Order[]);
   };
 
@@ -420,4 +344,4 @@ const OrdersTable = () => {
   );
 };
 
-export default OrdersTable;
+export default YourOrderHistoryTable;

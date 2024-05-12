@@ -16,7 +16,7 @@ const ViewAddDialogButton = ({
   return (
     <Dialog>
       <DialogTrigger asChild={asChild}>{children}</DialogTrigger>
-      <DialogContent className="p-0 w-auto bg-transparent border-none">
+      <DialogContent className="w-auto p-0 bg-transparent border-none">
         <ViewDetail bookId={bookId} />
       </DialogContent>
     </Dialog>

@@ -94,7 +94,7 @@ export const BookPreviewImageSchema = z.object({
 });
 
 export const ReviewSchema = z.object({
-  comment: z.string(),
+  comment: z.optional(z.string()),
   userId: z.string(),
   bookId: z.string(),
   rating: z.string(),

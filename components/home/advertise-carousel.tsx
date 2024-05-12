@@ -12,6 +12,7 @@ import { getListAdvertise } from "@/data/advertise";
 import { Advertisement } from "@prisma/client";
 import Image from "next/image";
 import { useEffect, useState, useTransition } from "react";
+import PacmanLoader from "react-spinners/PacmanLoader";
 
 const AdvertiseCarousel = () => {
   const [data, setData] = useState<Advertisement[]>([]);
@@ -30,6 +31,11 @@ const AdvertiseCarousel = () => {
   return (
     <Carousel className="w-full mb-8">
       <CarouselContent>
+        {isPending && (
+          <div className="h-[450px] w-full flex justify-center items-center">
+            <PacmanLoader color="#36d7b7" />
+          </div>
+        )}
         {!isPending &&
           data.map((_, index) => (
             <CarouselItem key={index}>
@@ -68,8 +74,8 @@ const AdvertiseCarousel = () => {
             </CarouselItem>
           ))}
       </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
+      {/* <CarouselPrevious />
+      <CarouselNext /> */}
     </Carousel>
   );
 };

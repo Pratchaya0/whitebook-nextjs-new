@@ -11,9 +11,10 @@ import { toast } from "sonner";
 
 interface AddToCartButtonProps {
   bookId: String;
+  text?: string;
 }
 
-const AddToCartButton = ({ bookId }: AddToCartButtonProps) => {
+const AddToCartButton = ({ bookId, text }: AddToCartButtonProps) => {
   const cartId = useCurrentCart();
   const user = useCurrentUser();
   const [isPending, startTransition] = useTransition();
@@ -60,11 +61,14 @@ const AddToCartButton = ({ bookId }: AddToCartButtonProps) => {
           onClick();
         }}
       >
-        {isBookBought ? (
-          <FaFunnelDollar className="h-5 w-5" />
-        ) : (
-          <FaShoppingBasket className="h-5 w-5" />
-        )}
+        <div className="flex items-center gap-x-2">
+          {text && <p>{text}</p>}
+          {isBookBought ? (
+            <FaFunnelDollar className="h-5 w-5" />
+          ) : (
+            <FaShoppingBasket className="h-5 w-5" />
+          )}
+        </div>
       </Button>
     </div>
   );

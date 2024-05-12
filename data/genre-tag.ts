@@ -24,3 +24,21 @@ export const getGenreTagById = async (genreTagId: string) => {
     return null;
   }
 };
+
+export const getGenreTagBuyBookId = async (bookId: string) => {
+  try {
+    const genreTags = await db.genreTag.findMany({
+      where: {
+        genreTagBooks: {
+          some: {
+            bookId: bookId,
+          },
+        },
+      },
+    });
+
+    return genreTags;
+  } catch (error) {
+    return null;
+  }
+};

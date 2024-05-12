@@ -41,6 +41,11 @@ const serviceComponents: {
     href: "/settings",
     description: "You can edit your personal data in here.",
   },
+  {
+    title: "Your order history",
+    href: "/services/your-order-histories",
+    description: "You can edit your personal data in here.",
+  },
 ];
 const adminComponents: { title: string; href: string; description: string }[] =
   [

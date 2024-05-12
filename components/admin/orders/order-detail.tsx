@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Table,
   TableBody,
@@ -8,8 +10,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getListBooksByOrderId, getSumOfListBooksByOrderId } from "@/data/book";
 import { getListCartBookByCartId } from "@/data/cart-book";
-import { Cart } from "@prisma/client";
+import { Book, Cart } from "@prisma/client";
+import { useEffect, useState, useTransition } from "react";
+import OrderDetailImage from "./order-detail-image";
 
 const invoices = [
   {
@@ -61,32 +66,56 @@ interface OrderDetailProps {
 }
 
 const OrderDetail = ({ orderId }: OrderDetailProps) => {
-  //   const cartBooks = await getListCartBookByCartId(cartId);
+  const [books, setBooks] = useState<Book[]>([]);
+  const [total, setTotal] = useState<number>();
+  const [isPending, startTransition] = useTransition();
+  const fetchBooks = async () => {
+    const data = await getListBooksByOrderId(orderId);
+    setBooks(data as Book[]);
+  };
+  const fetchSumOfAllBooks = async () => {
+    const data = await getSumOfListBooksByOrderId(orderId);
+    setTotal(data as number);
+  };
+
+  useEffect(() => {
+    startTransition(() => {
+      fetchBooks();
+      fetchSumOfAllBooks();
+    });
+  }, []);
+
+  console.log(books);
+
   return (
     <Table>
-      <TableCaption>A list of your recent invoices.</TableCaption>
+      <TableCaption>
+        If something wrong. Please contract to customer service.
+      </TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[100px]">Invoice</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Method</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
+          <TableHead className="w-[100px]">Image</TableHead>
+          <TableHead>Name</TableHead>
+          <TableHead className="text-right">Price</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {invoices.map((invoice) => (
-          <TableRow key={invoice.invoice}>
-            <TableCell className="font-medium">{invoice.invoice}</TableCell>
-            <TableCell>{invoice.paymentStatus}</TableCell>
-            <TableCell>{invoice.paymentMethod}</TableCell>
-            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
-          </TableRow>
-        ))}
+        {books.map((_, index) => {
+          return (
+            <TableRow key={index}>
+              <TableCell>
+                <OrderDetailImage bookId={_.id} />
+              </TableCell>
+              <TableCell>{_.name}</TableCell>
+              <TableCell className="text-right">{_.price}</TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
       <TableFooter>
         <TableRow>
-          <TableCell colSpan={3}>Total</TableCell>
-          <TableCell className="text-right">$2,500.00</TableCell>
+          <TableCell colSpan={2}>Total</TableCell>
+          <TableCell className="text-right font-bold">{total} ฿</TableCell>
         </TableRow>
       </TableFooter>
     </Table>
