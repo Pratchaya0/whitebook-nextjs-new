@@ -5,7 +5,6 @@ interface IParams {
 }
 
 const BookDetailPage = async ({ params }: { params: IParams }) => {
-  console.log(params);
   const { bookId } = params;
 
   return (

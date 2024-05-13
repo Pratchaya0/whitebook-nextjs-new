@@ -86,7 +86,6 @@ const ViewBookDetail = ({ bookId, isPage }: ViewBookDetailProps) => {
       const imageRef = ref(storage, _.imageUrl as string);
       getDownloadURL(imageRef)
         .then((url) => {
-          // console.log(url);
           setImages((prev) => [...prev, url as string]);
         })
         .catch((error) => {

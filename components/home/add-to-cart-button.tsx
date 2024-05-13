@@ -42,8 +42,8 @@ const AddToCartButton = ({ bookId, text }: AddToCartButtonProps) => {
       }),
       {
         loading: "Loading...",
-        success: (data) => {
-          return `Book added to cart!`;
+        success: (data: any) => {
+          return `${data.success as string}`;
         },
         error: "Oops! what's wrong?",
       }
@@ -62,7 +62,8 @@ const AddToCartButton = ({ bookId, text }: AddToCartButtonProps) => {
         }}
       >
         <div className="flex items-center gap-x-2">
-          {text && <p>{text}</p>}
+          {text && !isBookBought && <p>{text}</p>}
+          {text && isBookBought && <p>Pending</p>}
           {isBookBought ? (
             <FaFunnelDollar className="h-5 w-5" />
           ) : (

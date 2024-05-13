@@ -16,7 +16,6 @@ interface FooterProps {
 }
 
 const Footer = ({ data }: FooterProps) => {
-  console.log(data);
 
   return (
     <div className="flex h-5 items-center space-x-4 text-sm">

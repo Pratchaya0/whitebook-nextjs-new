@@ -25,8 +25,6 @@ const CartButton = () => {
     });
   }, []);
 
-  console.log(numOfBookInCart);
-
   return (
     <Button
       size="lg"

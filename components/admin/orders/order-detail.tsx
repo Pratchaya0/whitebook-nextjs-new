@@ -85,8 +85,6 @@ const OrderDetail = ({ orderId }: OrderDetailProps) => {
     });
   }, []);
 
-  console.log(books);
-
   return (
     <Table>
       <TableCaption>

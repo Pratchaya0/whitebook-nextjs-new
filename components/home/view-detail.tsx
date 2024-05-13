@@ -63,7 +63,6 @@ const ViewDetail = ({ bookId, isPage }: ViewDetailProps) => {
       const imageRef = ref(storage, _.imageUrl as string);
       getDownloadURL(imageRef)
         .then((url) => {
-          // console.log(url);
           setImages((prev) => [...prev, url as string]);
         })
         .catch((error) => {
@@ -94,11 +93,6 @@ const ViewDetail = ({ bookId, isPage }: ViewDetailProps) => {
       }
     });
   }, []);
-
-  console.log(book);
-  console.log(images);
-  console.log(reviews);
-  console.log(genreTags);
 
   return (
     <Card className={"w-[450px] shadow-md"}>
