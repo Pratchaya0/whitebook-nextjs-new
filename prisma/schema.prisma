@@ -99,6 +99,7 @@ model Book {
   writer            String?
   publisher         String?
   isOnSale          Boolean            @default(false)
+  coverImageUrl     String?
   bookUrl           String?
   categoryId        String?
   bookPreviewImages BookPreviewImage[]
