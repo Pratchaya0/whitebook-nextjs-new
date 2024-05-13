@@ -4,13 +4,14 @@ import { getCountBookInCartByCartId } from "@/data/cart-book";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { useCurrentCart } from "@/hooks/use-current-cart";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { FaShoppingBasket } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 
 const CartButton = () => {
   const cardId = useCurrentCart();
   const [numOfBookInCart, setNumOfBookInCart] = useState<number>();
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const getCartCount = async () => {
@@ -19,8 +20,12 @@ const CartButton = () => {
   };
 
   useEffect(() => {
-    getCartCount();
-  }, [cardId]);
+    startTransition(() => {
+      getCartCount();
+    });
+  }, []);
+
+  console.log(numOfBookInCart);
 
   return (
     <Button
