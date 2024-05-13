@@ -22,7 +22,7 @@ import { addNewCategory } from "@/actions/category";
 import { toast } from "sonner";
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
-import { Book } from "@prisma/client";
+import { Book, PaymentInformation } from "@prisma/client";
 import { FaPaperclip } from "react-icons/fa";
 import { getSumOfAllBookInCartByCartId } from "@/data/book";
 import { useCurrentCart } from "@/hooks/use-current-cart";
@@ -30,33 +30,47 @@ import { getDownloadURL, list, ref, uploadBytes } from "firebase/storage";
 import { storage } from "@/lib/firebase";
 import { v4 } from "uuid";
 import { createOrder } from "@/actions/order";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { getListPayments } from "@/data/payment";
 
 interface CartCheckoutFormProps {
-  books: Book[];
+  amount: number;
 }
 
-const CartCheckoutForm = () => {
+const CartCheckoutForm = ({ amount }: CartCheckoutFormProps) => {
   const user = useCurrentUser();
   const cartId = useCurrentCart();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const [sumOfAllBooks, setSumOfAllBooks] = useState<number>();
+  const [payments, setPayments] = useState<PaymentInformation[]>([]);
   const fetchSumOfAllBooks = async () => {
     const data = await getSumOfAllBookInCartByCartId(cartId as string);
     setSumOfAllBooks(data as number);
+  };
+  const fetchPayment = async () => {
+    const data = await getListPayments();
+    setPayments(data as PaymentInformation[]);
   };
 
   useEffect(() => {
     startTransition(() => {
       fetchSumOfAllBooks();
+      fetchPayment();
     });
   }, []);
 
   const [imageLocal, setImageLocal] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState<string>("");
 
-  const uploadSlip = () => {
+  const uploadSlip = (values: z.infer<typeof OrderSchema>) => {
     console.log("upload slip");
     if (imageLocal == null) return;
 
@@ -65,7 +79,8 @@ const CartCheckoutForm = () => {
       const refFIle = ref(storage, url.metadata.fullPath);
       getDownloadURL(refFIle)
         .then((url) => {
-          setImageUrl(url);
+          values.paymentImageUrl = url;
+          onSubmit(values);
         })
         .catch((error) => {
           setError("Image something wrong");
@@ -77,7 +92,7 @@ const CartCheckoutForm = () => {
   const form = useForm<z.infer<typeof OrderSchema>>({
     resolver: zodResolver(OrderSchema),
     defaultValues: {
-      amount: 1000,
+      amount: amount,
       paymentImageUrl: "",
       userId: user?.id as string,
     },
@@ -87,11 +102,6 @@ const CartCheckoutForm = () => {
   function onSubmit(values: z.infer<typeof OrderSchema>) {
     setError("");
     setSuccess("");
-
-    uploadSlip();
-
-    values.paymentImageUrl = imageUrl as string;
-    console.log(values);
 
     toast.promise(
       new Promise((resolve, reject) => {
@@ -129,8 +139,25 @@ const CartCheckoutForm = () => {
         <CardTitle>Checkout</CardTitle>
       </CardHeader>
       <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">Payment</TableHead>
+              <TableHead>Code</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {payments.map((_, index) => (
+              <TableRow key={index}>
+                <TableCell className="font-medium">{_.paymentName}</TableCell>
+                <TableCell>{_.paymentCode}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        <hr className="my-2" />
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(uploadSlip)} className="space-y-8">
             <FormField
               control={form.control}
               name="amount"
@@ -139,6 +166,7 @@ const CartCheckoutForm = () => {
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
                     <Input
+                      type="number"
                       placeholder="New category name..."
                       {...field}
                       readOnly
@@ -197,6 +225,15 @@ const CartCheckoutForm = () => {
                       }}
                     />
                   </FormControl>
+                  {imageLocal && (
+                    <div>
+                      <img
+                        src={URL.createObjectURL(imageLocal)}
+                        alt="Uploaded"
+                        style={{ maxWidth: "100px", maxHeight: "100px" }}
+                      />
+                    </div>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}

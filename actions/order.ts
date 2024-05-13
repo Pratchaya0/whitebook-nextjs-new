@@ -10,7 +10,6 @@ export const updateOrderIsPaid = async (
   orderId: string,
   isPaid: boolean
 ) => {
-
   await db.order.update({
     where: {
       id: orderId as string,

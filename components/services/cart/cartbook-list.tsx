@@ -122,7 +122,7 @@ const CartBookList = () => {
           <div></div>
         ) : (
           <CartCheckoutButton>
-            <CartCheckoutForm />
+            <CartCheckoutForm amount={sumOfAllBooks as number}/>
           </CartCheckoutButton>
         )}
       </div>
