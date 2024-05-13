@@ -21,6 +21,9 @@ import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
 import { addAdvertise, updateAdvertise } from "@/actions/advertise";
 import { Advertisement } from "@prisma/client";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "@/lib/firebase";
+import { v4 } from "uuid";
 
 interface UpdateAdvertiseFormProps {
   advertise: Advertisement;
@@ -30,6 +33,29 @@ const UpdateAdvertiseForm = ({ advertise }: UpdateAdvertiseFormProps) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+  const [imageLocal, setImageLocal] = useState<File | null>(null);
+
+  const uploadImage = (values: z.infer<typeof AdvertisementSchema>) => {
+    console.log("upload image");
+    if (imageLocal == null) {
+      values.advertiseImageUrl = advertise.advertiseImageUrl as string;
+      onSubmit(values);
+      return;
+    }
+
+    const imageRef = ref(storage, `advertise-images/${v4()}`);
+    uploadBytes(imageRef, imageLocal).then((url) => {
+      const refFIle = ref(storage, url.metadata.fullPath);
+      getDownloadURL(refFIle)
+        .then((url) => {
+          values.advertiseImageUrl = url;
+          onSubmit(values);
+        })
+        .catch((error) => {
+          setError("Image something wrong");
+        });
+    });
+  };
   // 1. Define your form.
   const form = useForm<z.infer<typeof AdvertisementSchema>>({
     resolver: zodResolver(AdvertisementSchema),
@@ -37,7 +63,7 @@ const UpdateAdvertiseForm = ({ advertise }: UpdateAdvertiseFormProps) => {
       title: advertise.title as string,
       description: advertise.description as string,
       highlightDescription: advertise.highlightDescription as string,
-      advertiseImageUrl: advertise.advertiseImageUrl as string,
+      advertiseImageUrl: "",
     },
   });
 
@@ -85,7 +111,7 @@ const UpdateAdvertiseForm = ({ advertise }: UpdateAdvertiseFormProps) => {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(uploadImage)} className="space-y-8">
             <FormField
               control={form.control}
               name="title"
@@ -135,8 +161,37 @@ const UpdateAdvertiseForm = ({ advertise }: UpdateAdvertiseFormProps) => {
                 <FormItem>
                   <FormLabel>Image</FormLabel>
                   <FormControl>
-                    <Input placeholder="New image..." {...field} />
+                    <Input
+                      placeholder="file"
+                      {...field}
+                      type="file"
+                      onChange={(event) => {
+                        const file =
+                          event.target.files && event.target.files[0];
+                        if (file) {
+                          setImageLocal(file);
+                        }
+                      }}
+                    />
                   </FormControl>
+                  {imageLocal && (
+                    <div>
+                      <img
+                        src={URL.createObjectURL(imageLocal)}
+                        alt="Uploaded"
+                        style={{ maxWidth: "100px", maxHeight: "100px" }}
+                      />
+                    </div>
+                  )}
+                  {!imageLocal && (
+                    <div>
+                      <img
+                        src={advertise.advertiseImageUrl as string}
+                        alt="Uploaded"
+                        style={{ maxWidth: "100px", maxHeight: "100px" }}
+                      />
+                    </div>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
