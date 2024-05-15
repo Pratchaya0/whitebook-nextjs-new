@@ -34,7 +34,6 @@ import * as z from "zod";
 
 const SettingPage = () => {
   const user = useCurrentUser();
-
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
   const { update } = useSession();
@@ -51,7 +50,7 @@ const SettingPage = () => {
       newPassword: undefined,
       name: user?.name || undefined,
       email: user?.email || undefined,
-      role: "",
+      role: user?.role,
       isTwoFactorEnabled: user?.isTwoFactorEnabled || undefined,
     },
   });
@@ -72,10 +71,6 @@ const SettingPage = () => {
         .catch(() => setError("Something went wrong!"));
     });
   };
-
-  const router = useRouter();
-
-  const test = useSession();
 
   return (
     <Form {...form}>
@@ -163,7 +158,7 @@ const SettingPage = () => {
               <FormItem>
                 <FormLabel>Role</FormLabel>
                 <Select
-                  disabled={isPending}
+                  disabled
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
@@ -207,19 +202,9 @@ const SettingPage = () => {
         </div>
         <FormError message={error} />
         <FormSuccess message={success} />
-        <div className="flex flex-row justify-between">
-          <Button disabled={isPending} type="submit">
-            Save
-          </Button>
-          <Button
-            onClick={() => {
-              router.push("/profile/" + user?.id);
-            }}
-            type="button"
-          >
-            Back
-          </Button>
-        </div>
+        <Button disabled={isPending} type="submit">
+          Save
+        </Button>
       </form>
     </Form>
   );

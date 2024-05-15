@@ -75,17 +75,15 @@ export const RegisterSchema = z.object({
 
 // จัดการหนังสือ
 export const BookSchema = z.object({
-  name: z.string(),
-  description: z.string(),
-  // .min(100, {
-  //   message: "Minimum 100 characters required",
-  // }),
-  price: z.string(),
-  writer: z.string(),
-  publisher: z.string(),
-  isOnSale: z.boolean(),
-  bookUrl: z.string(),
-  categoryId: z.string(),
+  name: z.optional(z.string()),
+  description: z.optional(z.string()),
+  coverImage: z.optional(z.string()),
+  price: z.optional(z.string()),
+  writer: z.optional(z.string()),
+  publisher: z.optional(z.string()),
+  isOnSale: z.optional(z.boolean()),
+  bookUrl: z.optional(z.string()),
+  categoryId: z.optional(z.string()),
 });
 
 export const BookPreviewImageSchema = z.object({

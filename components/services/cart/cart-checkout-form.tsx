@@ -170,7 +170,7 @@ const CartCheckoutForm = ({ amount }: CartCheckoutFormProps) => {
                       placeholder="New category name..."
                       {...field}
                       readOnly
-                    />
+                  />
                   </FormControl>
                   <FormDescription>
                     This is your user id (auto field).
