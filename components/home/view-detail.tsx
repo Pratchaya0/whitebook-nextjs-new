@@ -21,7 +21,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getBookImagesByBookId } from "@/data/book-image";
 import { getReviewsByBookId } from "@/data/review";
-import { getGenreTagBuyBookId } from "@/data/genre-tag";
+import { getGenreTagByBookId } from "@/data/genre-tag";
 import Image from "next/image";
 import { getDownloadURL, ref } from "firebase/storage";
 import { storage } from "@/lib/firebase";
@@ -75,7 +75,7 @@ const ViewDetail = ({ bookId, isPage }: ViewDetailProps) => {
     setReviews(data as Review[]);
   };
   const fetchGenreTags = async () => {
-    const data = await getGenreTagBuyBookId(bookId);
+    const data = await getGenreTagByBookId(bookId);
     setGenreTags(data as GenreTag[]);
   };
   const fetchCategory = async (book: Book) => {
@@ -108,33 +108,22 @@ const ViewDetail = ({ bookId, isPage }: ViewDetailProps) => {
           {!isPending && (
             <>
               {/* Images */}
-              <Carousel className="w-[425px] m-3 mb-0">
-                <CarouselContent>
-                  {images.map((_, index) => (
-                    <CarouselItem key={index}>
-                      <div className="p-1">
-                        <Card>
-                          <CardContent className="flex aspect-square items-center justify-center p-6">
-                            <div className="aspect-ratio">
-                              <Image
-                                src={_}
-                                width={300}
-                                height={350}
-                                alt="Banner Image"
-                                className="object-contain"
-                                priority
-                                sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 800px" // Add this prop with appropriate values
-                              />
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                {/* <CarouselPrevious />
-                <CarouselNext /> */}
-              </Carousel>
+              <Card>
+                <CardContent className="flex aspect-square items-center justify-center p-6">
+                  <div className="aspect-ratio">
+                    <Image
+                      src={book?.coverImageUrl as string}
+                      width={300}
+                      height={350}
+                      alt="Banner Image"
+                      className="object-contain"
+                      priority
+                      sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 800px" // Add this prop with appropriate values
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Detail */}
               <Table>
                 <TableBody>
@@ -179,7 +168,10 @@ const ViewDetail = ({ bookId, isPage }: ViewDetailProps) => {
 
       {!isPage && (
         <CardFooter className="pt-1">
-          <BackButton label={"more detail"} href={`services/book-detail/${book?.id}`} />
+          <BackButton
+            label={"more detail"}
+            href={`services/book-detail/${book?.id}`}
+          />
         </CardFooter>
       )}
     </Card>

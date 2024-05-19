@@ -32,7 +32,7 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <Toaster position="top-center" richColors expand={false} />
-            <EdgeStoreProvider>{children}</EdgeStoreProvider>
+            {children}
           </ThemeProvider>
         </body>
       </html>

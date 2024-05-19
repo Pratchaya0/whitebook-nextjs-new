@@ -55,29 +55,44 @@ import {
 import { deleteProduct, updateProductIsOnSale } from "@/actions/product";
 import UpdateDialogButton from "@/components/admin/update-dialog-button";
 import UpdateProductForm from "@/components/admin/products/update-product-form";
+import { useRouter } from "next/navigation";
 
 export const columns: ColumnDef<Book>[] = [
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && "indeterminate")
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
+
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
+    accessorKey: "coverImageUrl",
+    header: "Cover Image",
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <div>
+        <img
+          src={row.getValue("coverImageUrl")}
+          alt="Uploaded"
+          style={{ maxWidth: "100px", maxHeight: "100px" }}
+        />
+      </div>
     ),
-    enableSorting: false,
-    enableHiding: false,
   },
   {
     accessorKey: "name",
@@ -129,21 +144,22 @@ export const columns: ColumnDef<Book>[] = [
     accessorKey: "bookUrl",
     header: "Book Url",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("bookUrl")}</div>
+      <div className="">{row.getValue("bookUrl")}</div>
     ),
   },
-  {
-    accessorKey: "categoryId",
-    header: "Category",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("categoryId")}</div>
-    ),
-  },
+  // {
+  //   accessorKey: "categoryId",
+  //   header: "Category",
+  //   cell: ({ row }) => (
+  //     <div className="capitalize">{row.getValue("categoryId")}</div>
+  //   ),
+  // },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
       const data = row.original;
+      const router = useRouter();
 
       return (
         <div className="flex items-right justify-end gap-x-2">
@@ -228,7 +244,24 @@ export const columns: ColumnDef<Book>[] = [
                 Copy product ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View product detail</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() =>
+                  router.replace(
+                    `http://localhost:3000/services/book-detail/${data.id}`
+                  )
+                }
+              >
+                View product detail
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() =>
+                  router.replace(
+                    `http://localhost:3000/services/read/${data.id}`
+                  )
+                }
+              >
+                View Read
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => {

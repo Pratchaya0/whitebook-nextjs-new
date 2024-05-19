@@ -45,6 +45,53 @@ export const addProduct = async (values: z.infer<typeof BookSchema>) => {
   }
 };
 
+export const updateProduct = async (
+  bookId: string,
+  values: z.infer<typeof BookSchema>
+) => {
+  const validatedFields = BookSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    // return { error: "Invalid fields!" };
+    return null;
+  }
+
+  const {
+    name,
+    description,
+    coverImage,
+    price,
+    writer,
+    publisher,
+    isOnSale,
+    bookUrl,
+    categoryId,
+  } = validatedFields.data;
+
+  try {
+    const book = await db.book.update({
+      where: {
+        id: bookId,
+      },
+      data: {
+        name,
+        description,
+        coverImageUrl: coverImage,
+        price,
+        writer,
+        publisher,
+        isOnSale,
+        bookUrl,
+        categoryId,
+      },
+    });
+
+    return book;
+  } catch (error) {
+    return null;
+  }
+};
+
 export const updateProductIsOnSale = async (
   bookId: string,
   isOnSale: boolean

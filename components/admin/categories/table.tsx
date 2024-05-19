@@ -79,13 +79,13 @@ export const columns: ColumnDef<Category>[] = [
   //     <div className="capitalize">{row.getValue("categoryIcon")}</div>
   //   ),
   // },
-  {
-    accessorKey: "userId",
-    header: "Create by",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("userId")}</div>
-    ),
-  },
+  // {
+  //   accessorKey: "userId",
+  //   header: "Create by",
+  //   cell: ({ row }) => (
+  //     <div className="capitalize">{row.getValue("userId")}</div>
+  //   ),
+  // },
   {
     id: "actions",
     enableHiding: false,

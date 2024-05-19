@@ -80,7 +80,7 @@ const UpdatePaymentForm = ({ payment }: UpdateAdvertiseFormProps) => {
   return (
     <Card className="w-[450px]">
       <CardHeader>
-        <CardTitle>Create payment</CardTitle>
+        <CardTitle>Update payment</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>

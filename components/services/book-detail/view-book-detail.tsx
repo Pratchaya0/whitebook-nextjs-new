@@ -27,7 +27,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getBookImagesByBookId } from "@/data/book-image";
 import { getReviewsByBookId } from "@/data/review";
-import { getGenreTagBuyBookId } from "@/data/genre-tag";
+import { getGenreTagByBookId } from "@/data/genre-tag";
 import Image from "next/image";
 import { getDownloadURL, ref } from "firebase/storage";
 import { storage } from "@/lib/firebase";
@@ -98,7 +98,7 @@ const ViewBookDetail = ({ bookId, isPage }: ViewBookDetailProps) => {
     setReviews(data as Review[]);
   };
   const fetchGenreTags = async () => {
-    const data = await getGenreTagBuyBookId(bookId);
+    const data = await getGenreTagByBookId(bookId);
     setGenreTags(data as GenreTag[]);
   };
   const fetchCategory = async (book: Book) => {
@@ -158,42 +158,57 @@ const ViewBookDetail = ({ bookId, isPage }: ViewBookDetailProps) => {
 
           {/* Detail && Reviews */}
           <div className="col-span-2">
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell className="font-bold">Book Name</TableCell>
-                  <TableCell>{book?.name}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-bold">Description</TableCell>
-                  <TableCell>{book?.description}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-bold">Price</TableCell>
-                  <TableCell>{book?.price} ฿</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-bold">Publisher</TableCell>
-                  <TableCell>{book?.publisher}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-bold">Writer</TableCell>
-                  <TableCell>{book?.writer}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-bold">Category</TableCell>
-                  <TableCell>{category?.categoryName}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-bold">Genre</TableCell>
-                  <TableCell className="flex gap-x-2">
-                    {genreTags.map((_, index) => (
-                      <Badge key={index}>{_.genreTagName}</Badge>
-                    ))}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="aspect-ratio flex justify-center mb-2">
+                <Image
+                  src={book?.coverImageUrl as string}
+                  width={170}
+                  height={200}
+                  alt="Banner Image"
+                  className="object-contain"
+                  priority
+                  sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 800px" // Add this prop with appropriate values
+                />
+              </div>
+              <div className="col-span-2">
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell className="font-bold">Book Name</TableCell>
+                      <TableCell>{book?.name}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold">Description</TableCell>
+                      <TableCell>{book?.description}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold">Price</TableCell>
+                      <TableCell>{book?.price} ฿</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold">Publisher</TableCell>
+                      <TableCell>{book?.publisher}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold">Writer</TableCell>
+                      <TableCell>{book?.writer}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold">Category</TableCell>
+                      <TableCell>{category?.categoryName}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold">Genre</TableCell>
+                      <TableCell className="flex gap-x-2">
+                        {genreTags.map((_, index) => (
+                          <Badge key={index}>{_.genreTagName}</Badge>
+                        ))}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
 
             <h2 className="font-bold bg-slate-200 rounded-md text-center">
               Reviews

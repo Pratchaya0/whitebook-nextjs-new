@@ -3,6 +3,7 @@
 import { addToCart } from "@/actions/cart";
 import { Button } from "@/components/ui/button";
 import { checkIfBookInBuyerBookByBookId } from "@/data/bayer-book";
+import { useCountCart } from "@/hooks/use-cart-count";
 import { useCurrentCart } from "@/hooks/use-current-cart";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useEffect, useState, useTransition } from "react";
@@ -17,6 +18,7 @@ interface AddToCartButtonProps {
 const AddToCartButton = ({ bookId, text }: AddToCartButtonProps) => {
   const cartId = useCurrentCart();
   const user = useCurrentUser();
+  const { increase } = useCountCart();
   const [isPending, startTransition] = useTransition();
   const [isBookBought, setIsBookBought] = useState<boolean>(false);
   const checkBook = async () => {
@@ -43,6 +45,14 @@ const AddToCartButton = ({ bookId, text }: AddToCartButtonProps) => {
       {
         loading: "Loading...",
         success: (data: any) => {
+          switch (data.code) {
+            case 1:
+              break;
+
+            default:
+              increase();
+              break;
+          }
           return `${data.success as string}`;
         },
         error: "Oops! what's wrong?",

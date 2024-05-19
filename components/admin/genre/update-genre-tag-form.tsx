@@ -82,7 +82,7 @@ const UpdateGenreTagForm = ({ genreTag }: UpdateGenreTagFormProps) => {
   return (
     <Card className="w-[450px]">
       <CardHeader>
-        <CardTitle>Create genre tag</CardTitle>
+        <CardTitle>Update genre tag</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>

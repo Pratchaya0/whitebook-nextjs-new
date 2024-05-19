@@ -83,7 +83,7 @@ const UpdateCategoryForm = ({ category }: UpdateCategoryFormProps) => {
   return (
     <Card className="w-[450px]">
       <CardHeader>
-        <CardTitle>Create category</CardTitle>
+        <CardTitle>Update category</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>

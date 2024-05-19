@@ -94,7 +94,7 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "paymentImageUrl",
     header: "Payment Image Url",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("paymentImageUrl")}</div>
+      <div className="">{row.getValue("paymentImageUrl")}</div>
     ),
   },
   {

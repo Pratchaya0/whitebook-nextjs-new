@@ -52,7 +52,8 @@ const BookCardItem = ({ book }: BookCardItemProps) => {
               fill
               className="w-full h-full object-contain"
               src={
-                "https://firebasestorage.googleapis.com/v0/b/whitebook-411409.appspot.com/o/products%2F1705912339334-10002.jpg?alt=media&token=bb73ebcc-bbec-4532-827c-81213b01f0f3"
+                book.coverImageUrl as string
+                // "https://firebasestorage.googleapis.com/v0/b/whitebook-411409.appspot.com/o/products%2F1705912339334-10002.jpg?alt=media&token=bb73ebcc-bbec-4532-827c-81213b01f0f3"
               }
               alt={book.name as string}
               priority

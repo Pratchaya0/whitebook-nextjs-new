@@ -25,7 +25,7 @@ export const getGenreTagById = async (genreTagId: string) => {
   }
 };
 
-export const getGenreTagBuyBookId = async (bookId: string) => {
+export const getGenreTagByBookId = async (bookId: string) => {
   try {
     const genreTags = await db.genreTag.findMany({
       where: {

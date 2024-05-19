@@ -11,6 +11,7 @@ export const SettingsSchema = z
     name: z.optional(z.string()),
     isTwoFactorEnabled: z.optional(z.boolean()),
     // role: z.enum([UserRoleType.ADMIN, UserRoleType.USER]),
+    image: z.optional(z.string()),
     role: z.string(),
     email: z.optional(z.string().email()),
     password: z.optional(z.string().min(6)),

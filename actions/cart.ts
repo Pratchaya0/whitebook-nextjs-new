@@ -3,7 +3,9 @@
 import { db } from "@/lib/db";
 
 export const addToCart = async (cartId: string, bookId: string) => {
-  const exist = await db.cartBook.findMany({
+  console.log(cartId);
+  console.log(bookId);
+  const exist = await db.cartBook.findFirst({
     where: {
       cartId: cartId,
       bookId: bookId,
@@ -11,7 +13,7 @@ export const addToCart = async (cartId: string, bookId: string) => {
   });
 
   if (exist) {
-    return { success: "This is Product already added to Cart" }
+    return { success: "This is Product already added to Cart", code: 1 };
   }
 
   await db.cartBook.create({
@@ -21,7 +23,7 @@ export const addToCart = async (cartId: string, bookId: string) => {
     },
   });
 
-  return { success: "Product added to Cart" };
+  return { success: "Product added to Cart", code: 0 };
 };
 
 export const deleteBookFromCartByCartIdAndBookId = async (
@@ -36,7 +38,8 @@ export const deleteBookFromCartByCartIdAndBookId = async (
   });
 
   if (!cartBook) {
-    throw new Error("Cart book does not exist!");
+    // throw new Error("Cart book does not exist!");
+    return { res: "Cart book does not exist!", code: 1 };
   }
 
   await db.cartBook.delete({
@@ -45,5 +48,5 @@ export const deleteBookFromCartByCartIdAndBookId = async (
     },
   });
 
-  return { res: "Product deleted on cart!" };
+  return { res: "Product deleted on cart!", code: 0 };
 };

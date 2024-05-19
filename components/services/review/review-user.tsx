@@ -23,6 +23,7 @@ const ReviewUser = ({ userId }: ReviewUserProps) => {
     <div className="flex justify-start items-start gap-x-3">
       <Avatar>
         <AvatarImage
+        className="object-contain"
           src={
             user?.image === null ? "https://github.com/shadcn.png" : user?.image
           }

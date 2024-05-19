@@ -184,7 +184,7 @@ const AddProductForm = () => {
     });
 
     // add to data base
-    addBookPreviewImage(tmpPreviewImageUrl as string[], bookId);
+    await addBookPreviewImage(tmpPreviewImageUrl as string[], bookId);
   };
 
   const uploadBook = async (values: z.infer<typeof BookSchema>) => {

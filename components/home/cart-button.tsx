@@ -7,16 +7,19 @@ import { useCurrentCart } from "@/hooks/use-current-cart";
 import { useEffect, useState, useTransition } from "react";
 import { FaShoppingBasket } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { useCountCart } from "@/hooks/use-cart-count";
 
 const CartButton = () => {
   const cardId = useCurrentCart();
-  const [numOfBookInCart, setNumOfBookInCart] = useState<number>();
+  const { count, update } = useCountCart();
+  // const [numOfBookInCart, setNumOfBookInCart] = useState<number>();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const getCartCount = async () => {
     const count = await getCountBookInCartByCartId(cardId as string);
-    setNumOfBookInCart(count as number);
+    // setNumOfBookInCart(count as number);
+    update(count);
   };
 
   useEffect(() => {
@@ -35,7 +38,7 @@ const CartButton = () => {
       }}
     >
       <FaShoppingBasket className="h-5 w-5 mr-1" />
-      <Badge variant="outline">{numOfBookInCart}</Badge>
+      <Badge variant="outline">{count}</Badge>
     </Button>
   );
 };
