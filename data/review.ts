@@ -21,7 +21,7 @@ export const checkReviewByUserIdAndBookId = async (
   bookId: string
 ) => {
   try {
-    const existReview = await db.review.findMany({
+    const existReview = await db.review.findFirst({
       where: {
         bookId: bookId,
         userId: userId,

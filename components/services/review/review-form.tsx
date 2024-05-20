@@ -73,6 +73,10 @@ const ReviewForm = ({ bookId }: ReviewFormProps) => {
     });
   }, []);
 
+  console.log(isBookBought);
+  console.log(isYourOwnBook);
+  console.log(isReviewed);
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof ReviewSchema>>({
     resolver: zodResolver(ReviewSchema),
