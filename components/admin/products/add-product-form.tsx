@@ -1,6 +1,9 @@
 "use client";
 
-import { addBookPreviewImage } from "@/actions/book-preview-image";
+import {
+  addBookPreviewImage,
+  addBookPreviewImage_v2,
+} from "@/actions/book-preview-image";
 import { addGenreTagBookByGenreTagId } from "@/actions/genreTag-book";
 import { addProduct } from "@/actions/product";
 import { uploadBookFile } from "@/actions/upload-book";
@@ -176,15 +179,18 @@ const AddProductForm = () => {
         getDownloadURL(refFIle)
           .then((url) => {
             setTmpPreviewImageUrl((prev) => [...(prev as string[]), url]);
+            addPreviewImageToDatabase(url, bookId);
           })
           .catch((error) => {
             setError("Image something wrong");
           });
       });
     });
+  };
 
-    // add to data base
-    await addBookPreviewImage(tmpPreviewImageUrl as string[], bookId);
+  const addPreviewImageToDatabase = async (url: string, bookId: string) => {
+    const res = await addBookPreviewImage_v2(url, bookId);
+    console.log(res);
   };
 
   const uploadBook = async (values: z.infer<typeof BookSchema>) => {
@@ -243,7 +249,7 @@ const AddProductForm = () => {
           // upload genre tag
           createGenreTagBook(res.id);
 
-          setSuccess("Product Added")
+          setSuccess("Product Added");
         }
       })
       .catch(() => {

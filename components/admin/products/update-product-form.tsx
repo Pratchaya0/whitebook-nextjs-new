@@ -1,6 +1,10 @@
 "use client";
 
-import { addBookPreviewImage } from "@/actions/book-preview-image";
+import {
+  addBookPreviewImage,
+  addBookPreviewImage_v2,
+  deletePreviewImage,
+} from "@/actions/book-preview-image";
 import { addGenreTagBookByGenreTagId } from "@/actions/genreTag-book";
 import { addProduct, updateProduct } from "@/actions/product";
 import { uploadBookFile } from "@/actions/upload-book";
@@ -42,6 +46,7 @@ import {
   GenreTag,
   GenreTagBook,
 } from "@prisma/client";
+import { Item } from "@radix-ui/react-dropdown-menu";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -174,7 +179,8 @@ const UpdateProductForm = ({ book }: UpdateProductFormProps) => {
 
   const uploadCoverImage = (values: z.infer<typeof BookSchema>) => {
     console.log("upload cover image");
-    if (coverImageLocal == null) {
+    if (coverImageLocal == null || !coverImageLocal) {
+      values.coverImage = book.coverImageUrl as string;
       uploadBook(values);
       // onSubmit(values);
       return;
@@ -197,7 +203,7 @@ const UpdateProductForm = ({ book }: UpdateProductFormProps) => {
 
   const uploadPreviewImage = async (bookId: string) => {
     console.log("upload preview image");
-    if (previewImage == null) {
+    if (previewImage?.length == 0 || previewImage == null) {
       return;
     }
 
@@ -209,22 +215,33 @@ const UpdateProductForm = ({ book }: UpdateProductFormProps) => {
         getDownloadURL(refFIle)
           .then((url) => {
             setTmpPreviewImageUrl((prev) => [...(prev as string[]), url]);
+            updatePreviewImageToDatabase(url, bookId);
           })
           .catch((error) => {
             setError("Image something wrong");
           });
       });
     });
+  };
 
-    // add to data base
-    await addBookPreviewImage(tmpPreviewImageUrl as string[], bookId);
+  const updatePreviewImageToDatabase = async (url: string, bookId: string) => {
+    dataPreviewImage.forEach(async (Item) => {
+      deletePreviewImageInDatabase(Item.id);
+    });
+
+    const res = await addBookPreviewImage_v2(url, bookId);
+    console.log(res);
+  };
+
+  const deletePreviewImageInDatabase = async (id: string) => {
+    const res = await deletePreviewImage(id);
+    console.log(res);
   };
 
   const uploadBook = async (values: z.infer<typeof BookSchema>) => {
     console.log("upload book");
-    console.log(bookFile);
-    console.log(values);
-    if (bookFile == null) {
+    if (bookFile == null || !bookFile) {
+      values.bookUrl = book.bookUrl as string;
       onSubmit(values);
       return;
     }
@@ -243,7 +260,7 @@ const UpdateProductForm = ({ book }: UpdateProductFormProps) => {
 
   const createGenreTagBook = async (bookId: string) => {
     console.log("add genre tag book");
-    if (bookGenreTag == null) {
+    if (bookGenreTag == null || bookGenreTag.length == 0) {
       return;
     }
 
@@ -275,13 +292,15 @@ const UpdateProductForm = ({ book }: UpdateProductFormProps) => {
           createGenreTagBook(res.id);
 
           console.log("Done!!!");
-          setSuccess("Product updated")
+          setSuccess("Product updated");
         }
       })
       .catch(() => {
         setError("Something went wrong!");
       });
   }
+
+  console.log(previewImage);
 
   return (
     <Card className="w-[450px]">
@@ -533,7 +552,7 @@ const UpdateProductForm = ({ book }: UpdateProductFormProps) => {
                       ))}
                     </div>
                   )}
-                  {!previewImage && (
+                  {previewImage?.length == 0 && (
                     <div className="flex items-start justify-start gap-x-2">
                       {dataPreviewImage.map((_, index) => (
                         <img
@@ -571,6 +590,10 @@ const UpdateProductForm = ({ book }: UpdateProductFormProps) => {
                   </FormControl>
                   <FormMessage />
                 </FormItem>
+                <div className="w-full px-2 pr-4">
+                  <a href="">{book.bookUrl}</a>
+                </div>
+
                 <FormError message={error} />
                 <FormSuccess message={success} />
                 <Button type="submit">Create</Button>
