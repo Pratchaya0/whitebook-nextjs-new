@@ -223,8 +223,8 @@ model CartBook {
   id     String  @id @default(cuid())
   Book   Book?   @relation(fields: [bookId], references: [id])
   bookId String?
-  Cart   Cart?   @relation(fields: [cartId], references: [id])
-  cartId String?
+  Cart   Cart    @relation(fields: [cartId], references: [id])
+  cartId String
 }
 
 // enum UserRole {

@@ -265,17 +265,22 @@ const UpdateProductForm = ({ book }: UpdateProductFormProps) => {
 
   async function onSubmit(values: z.infer<typeof BookSchema>) {
     // add product return product id
-    updateProduct(book.id as string, values).then((res) => {
-      console.log(res);
-      if (res) {
-        // upload preview image
-        uploadPreviewImage(res.id);
-        // upload genre tag
-        createGenreTagBook(res.id);
+    updateProduct(book.id as string, values)
+      .then((res) => {
+        console.log(res);
+        if (res) {
+          // upload preview image
+          uploadPreviewImage(res.id);
+          // upload genre tag
+          createGenreTagBook(res.id);
 
-        console.log("Done!!!");
-      }
-    });
+          console.log("Done!!!");
+          setSuccess("Product updated")
+        }
+      })
+      .catch(() => {
+        setError("Something went wrong!");
+      });
   }
 
   return (

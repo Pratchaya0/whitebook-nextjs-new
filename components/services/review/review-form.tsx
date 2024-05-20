@@ -127,7 +127,7 @@ const ReviewForm = ({ bookId }: ReviewFormProps) => {
 
   return (
     <>
-      {!isBookBought && !isYourOwnBook && (
+      {!user && (
         <Alert variant="amber">
           {/* <AlertCircle className="h-4 w-4" /> */}
           <AlertTitle>Comment</AlertTitle>
@@ -136,7 +136,7 @@ const ReviewForm = ({ bookId }: ReviewFormProps) => {
           </AlertDescription>
         </Alert>
       )}
-      {isBookBought && !isYourOwnBook && (
+      {!isBookBought && !isYourOwnBook && user && (
         <Alert variant="amber">
           {/* <AlertCircle className="h-4 w-4" /> */}
           <AlertTitle>Comment</AlertTitle>
@@ -145,14 +145,23 @@ const ReviewForm = ({ bookId }: ReviewFormProps) => {
           </AlertDescription>
         </Alert>
       )}
-      {isBookBought && isReviewed && isYourOwnBook && (
+      {isBookBought && !isYourOwnBook && user && (
+        <Alert variant="amber">
+          {/* <AlertCircle className="h-4 w-4" /> */}
+          <AlertTitle>Comment</AlertTitle>
+          <AlertDescription>
+            You can add a comment after buy this book. :)
+          </AlertDescription>
+        </Alert>
+      )}
+      {isBookBought && isReviewed && isYourOwnBook && user && (
         <Alert variant="green">
           {/* <AlertCircle className="h-4 w-4" /> */}
           <AlertTitle>Comment</AlertTitle>
           <AlertDescription>You already add a review. :)</AlertDescription>
         </Alert>
       )}
-      {isBookBought && !isReviewed && isYourOwnBook && (
+      {isBookBought && !isReviewed && isYourOwnBook && user && (
         <Card className="w-full">
           <CardContent className="mt-3">
             <Form {...form}>
@@ -188,7 +197,7 @@ const ReviewForm = ({ bookId }: ReviewFormProps) => {
       )}
 
       <div className="mt-2">
-        {!isPending && isYourOwnBook && (
+        {!isPending && isYourOwnBook && user && (
           <Button
             variant="green"
             className="w-full"
@@ -203,7 +212,7 @@ const ReviewForm = ({ bookId }: ReviewFormProps) => {
             </div>
           </Button>
         )}
-        {!isYourOwnBook && (
+        {!isYourOwnBook && user && (
           <AddToCartButton bookId={bookId as string} text="Add to cart" />
         )}
       </div>

@@ -43,7 +43,7 @@ const BookCardItem = ({ book }: BookCardItemProps) => {
     <Card>
       <CardHeader className="text-center">
         <CardTitle>{book.name}</CardTitle>
-        <CardDescription>{book.price}</CardDescription>
+        <CardDescription>{book.price} ฿</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col items-center w-full gap-1">
@@ -68,7 +68,18 @@ const BookCardItem = ({ book }: BookCardItemProps) => {
             Loading...
           </div>
         )}
-        {!isPending && !isYourOwnBook && (
+        {!user && (
+          <>
+            <ViewAddDialogButton bookId={book.id as string} asChild>
+              <div className="flex items-center w-full gap-x-2">
+                <Button size="lg" className="w-full" variant="outline">
+                  <FaSistrix className="h-5 w-5" />
+                </Button>
+              </div>
+            </ViewAddDialogButton>
+          </>
+        )}
+        {!isPending && !isYourOwnBook && user && (
           <>
             <ViewAddDialogButton bookId={book.id as string} asChild>
               <div className="flex items-center w-full gap-x-2">
@@ -80,7 +91,7 @@ const BookCardItem = ({ book }: BookCardItemProps) => {
             <AddToCartButton bookId={book.id} />
           </>
         )}
-        {!isPending && isYourOwnBook && (
+        {!isPending && isYourOwnBook && user && (
           <Button
             variant="green"
             className="w-full"

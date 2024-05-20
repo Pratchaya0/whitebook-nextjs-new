@@ -234,17 +234,21 @@ const AddProductForm = () => {
 
   async function onSubmit(values: z.infer<typeof BookSchema>) {
     // add product return product id
-    addProduct(values).then((res) => {
-      console.log(res);
-      if (res) {
-        // upload preview image
-        uploadPreviewImage(res.id);
-        // upload genre tag
-        createGenreTagBook(res.id);
+    addProduct(values)
+      .then((res) => {
+        console.log(res);
+        if (res) {
+          // upload preview image
+          uploadPreviewImage(res.id);
+          // upload genre tag
+          createGenreTagBook(res.id);
 
-        console.log("Done!!!");
-      }
-    });
+          setSuccess("Product Added")
+        }
+      })
+      .catch(() => {
+        setError("Something went wrong!");
+      });
   }
 
   return (

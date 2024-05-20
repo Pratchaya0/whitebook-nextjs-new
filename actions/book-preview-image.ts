@@ -6,7 +6,7 @@ export const addBookPreviewImage = async (
   imagesUrl: string[],
   bookId: string
 ) => {
-  if (imagesUrl.length === 0) {
+  if (!imagesUrl) {
     return;
   }
 
@@ -23,4 +23,11 @@ export const addBookPreviewImage = async (
   } catch (error) {
     return { error: "Can not add preview image" };
   }
+};
+
+export const addBookPreviewImage_v2 = async (
+  imageUrl: string,
+  bookId: string
+) => {
+
 };

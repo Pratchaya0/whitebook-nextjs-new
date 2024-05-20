@@ -3,7 +3,11 @@
  * These routes do not require authentication
  * @type {string[]}
  */
-export const publicRoutes = ["/", "/auth/new-verification", "/services/explore"];
+export const publicRoutes = [
+  "/",
+  "/auth/new-verification",
+  "/services/explore",
+];
 
 /**
  * An array of routes that are used for authentication
@@ -24,6 +28,7 @@ export const authRoutes = [
  * @type {string}
  */
 export const apiAuthPrefix = "/api/auth";
+export const bookDetailRoute = "/services/book-detail";
 
 /**
  * The default redirect path after logging in

@@ -54,6 +54,7 @@ import { toast } from "sonner";
 import { updateOrderIsPaid } from "@/actions/order";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export const columns: ColumnDef<Order>[] = [
   {
@@ -94,7 +95,17 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "paymentImageUrl",
     header: "Payment Image Url",
     cell: ({ row }) => (
-      <div className="">{row.getValue("paymentImageUrl")}</div>
+      <div className="aspect-ratio">
+        <Image
+          src={row.getValue("paymentImageUrl")}
+          width={150}
+          height={350}
+          alt="Banner Image"
+          className="object-contain"
+          priority
+          sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 800px" // Add this prop with appropriate values
+        />
+      </div>
     ),
   },
   {

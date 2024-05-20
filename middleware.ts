@@ -4,6 +4,7 @@ import {
   DEFAULT_LOGIN_REDIRECT,
   apiAuthPrefix,
   authRoutes,
+  bookDetailRoute,
   publicRoutes,
 } from "@/routes";
 
@@ -14,8 +15,13 @@ export default auth((req) => {
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+  const isBookDetailRoute = nextUrl.pathname.startsWith(bookDetailRoute);
 
   if (isApiAuthRoute) {
+    return null;
+  }
+
+  if (isBookDetailRoute) {
     return null;
   }
 

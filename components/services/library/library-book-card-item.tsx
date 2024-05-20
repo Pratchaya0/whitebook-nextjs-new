@@ -33,7 +33,7 @@ const LibraryBookCardItem = ({ book }: LibraryBookCardItemProps) => {
     <Card>
       <CardHeader className="text-center">
         <CardTitle>{book.name}</CardTitle>
-        <CardDescription>{book.price}</CardDescription>
+        {/* <CardDescription>{book.price}</CardDescription> */}
       </CardHeader>
       <CardContent>
         <div className="flex flex-col items-center w-full gap-1">
@@ -53,7 +53,7 @@ const LibraryBookCardItem = ({ book }: LibraryBookCardItemProps) => {
         </div>
       </CardContent>
       <CardFooter>
-        <div className="flex items-center justify-between gap-x-2">
+        <div className="w-full flex items-center justify-between gap-x-2">
           <div>
             <Button
               variant="green"
