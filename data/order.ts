@@ -39,3 +39,22 @@ export const getOrderByUserId = async (userId: string) => {
     return null;
   }
 };
+
+export const getSumAllOrderAmountByUserId = async (userId: string) => {
+  try {
+    const orders = await db.order.findMany({
+      where: { userId: userId },
+    });
+
+    let total = 0;
+    orders.forEach((order) => {
+      if (order.amount) {
+        total += order.amount as number;
+      }
+    });
+
+    return total as number;
+  } catch (error) {
+    return 0 as number;
+  }
+};
