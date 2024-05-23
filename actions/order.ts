@@ -2,6 +2,10 @@
 
 import { getListBooksInCartByCartId } from "@/data/book";
 import { db } from "@/lib/db";
+import {
+  sendConfirmedOrderEmailToUser,
+  sendOrderCreatedEmailToAdmin,
+} from "@/lib/mail";
 import { OrderSchema } from "@/schemas";
 import * as z from "zod";
 
@@ -40,7 +44,17 @@ export const updateOrderIsPaid = async (
     });
   });
 
-  //TODO: send email to customer
+  // Get user by userId
+  const user = await db.user.findFirst({
+    where: {
+      id: userId,
+    },
+  });
+
+  // send email to customer
+  if (user) {
+    await sendConfirmedOrderEmailToUser(user.email as string, orderId);
+  }
 
   return { res: "Status is updated" };
 };
@@ -114,6 +128,23 @@ export const createOrder = async (
     {
       error: "error: deleteCartBook";
     }
+  }
+
+  // Get all admin in database
+  const admins = await db.user.findMany({
+    where: {
+      role: "ADMIN",
+    },
+  });
+  
+  // Send email alert to admin
+  if (admins) {
+    admins.forEach(async (admin) => {
+      await sendOrderCreatedEmailToAdmin(
+        admin.email as string,
+        orderCreated.id
+      );
+    });
   }
 
   return { success: "Successful!" };

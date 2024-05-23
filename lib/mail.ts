@@ -96,3 +96,73 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     console.log(error);
   }
 };
+
+export const sendOrderCreatedEmailToAdmin = async (
+  email: string,
+  orderId: string
+) => {
+  console.log(email);
+  const orderDetailLink = `${domain}/services/order-details/${orderId}`;
+
+  const transport = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: SMTP_EMAIL,
+      pass: SMTP_PASSWORD,
+    },
+  });
+
+  try {
+    const testResult = await transport.verify();
+    console.log(testResult);
+  } catch (error) {
+    console.log(error);
+  }
+
+  try {
+    const sendResult = await transport.sendMail({
+      from: SMTP_EMAIL,
+      to: email,
+      subject: "New order alert",
+      html: `<p>Click <a href="${orderDetailLink}">here</a> to see order detail.</p>`,
+    });
+    console.log(sendResult);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const sendConfirmedOrderEmailToUser = async (
+  email: string,
+  orderId: string
+) => {
+  console.log(email);
+  const orderDetailLink = `${domain}/services/order-details/${orderId}`;
+
+  const transport = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: SMTP_EMAIL,
+      pass: SMTP_PASSWORD,
+    },
+  });
+
+  try {
+    const testResult = await transport.verify();
+    console.log(testResult);
+  } catch (error) {
+    console.log(error);
+  }
+
+  try {
+    const sendResult = await transport.sendMail({
+      from: SMTP_EMAIL,
+      to: email,
+      subject: "Your order is approved",
+      html: `<p>Click <a href="${orderDetailLink}">here</a> to see order detail.</p>`,
+    });
+    console.log(sendResult);
+  } catch (error) {
+    console.log(error);
+  }
+};
