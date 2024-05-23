@@ -8,6 +8,9 @@ export const getListOrders = async () => {
       include: {
         orderBooks: true,
       },
+      orderBy: {
+        createdDate: "desc",
+      },
     });
 
     return orders;
