@@ -24,7 +24,7 @@ const NewVerificationForm = () => {
     newVerification(token)
       .then((data) => {
         setSuccess(data?.success);
-        setError(data?.error);
+        // setError(data?.error);
       })
       .catch(() => {
         setError("Something went wrong!");
@@ -45,7 +45,7 @@ const NewVerificationForm = () => {
       <div className="flex items-center w-full justify-center">
         {!success && !error && <BeatLoader />}
         <FormSuccess message={success} />
-        <FormError message={error} />
+        {/* <FormError message={error} /> */}
       </div>
     </CardWrapper>
   );
