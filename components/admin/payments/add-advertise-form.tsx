@@ -86,7 +86,7 @@ const AddPaymentForm = () => {
               name="paymentName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input placeholder="New name..." {...field} />
                   </FormControl>
@@ -99,7 +99,7 @@ const AddPaymentForm = () => {
               name="paymentCode"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Code</FormLabel>
                   <FormControl>
                     <Input placeholder="New code..." {...field} />
                   </FormControl>
