@@ -178,7 +178,6 @@ const UpdateProductForm = ({ book }: UpdateProductFormProps) => {
   };
 
   const uploadCoverImage = (values: z.infer<typeof BookSchema>) => {
-    console.log("upload cover image");
     if (coverImageLocal == null || !coverImageLocal) {
       values.coverImage = book.coverImageUrl as string;
       uploadBook(values);
@@ -202,7 +201,6 @@ const UpdateProductForm = ({ book }: UpdateProductFormProps) => {
   };
 
   const uploadPreviewImage = async (bookId: string) => {
-    console.log("upload preview image");
     if (previewImage?.length == 0 || previewImage == null) {
       return;
     }
@@ -230,16 +228,13 @@ const UpdateProductForm = ({ book }: UpdateProductFormProps) => {
     });
 
     const res = await addBookPreviewImage_v2(url, bookId);
-    console.log(res);
   };
 
   const deletePreviewImageInDatabase = async (id: string) => {
     const res = await deletePreviewImage(id);
-    console.log(res);
   };
 
   const uploadBook = async (values: z.infer<typeof BookSchema>) => {
-    console.log("upload book");
     if (bookFile == null || !bookFile) {
       values.bookUrl = book.bookUrl as string;
       onSubmit(values);
@@ -259,7 +254,6 @@ const UpdateProductForm = ({ book }: UpdateProductFormProps) => {
   };
 
   const createGenreTagBook = async (bookId: string) => {
-    console.log("add genre tag book");
     if (bookGenreTag == null || bookGenreTag.length == 0) {
       return;
     }
@@ -284,14 +278,12 @@ const UpdateProductForm = ({ book }: UpdateProductFormProps) => {
     // add product return product id
     updateProduct(book.id as string, values)
       .then((res) => {
-        console.log(res);
         if (res) {
           // upload preview image
           uploadPreviewImage(res.id);
           // upload genre tag
           createGenreTagBook(res.id);
 
-          console.log("Done!!!");
           setSuccess("Product updated");
         }
       })
@@ -299,8 +291,6 @@ const UpdateProductForm = ({ book }: UpdateProductFormProps) => {
         setError("Something went wrong!");
       });
   }
-
-  console.log(previewImage);
 
   return (
     <Card className="w-[450px]">
@@ -596,7 +586,7 @@ const UpdateProductForm = ({ book }: UpdateProductFormProps) => {
 
                 <FormError message={error} />
                 <FormSuccess message={success} />
-                <Button type="submit">Create</Button>
+                <Button type="submit">Update</Button>
               </form>
             </Form>
           </div>

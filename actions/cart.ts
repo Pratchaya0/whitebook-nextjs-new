@@ -3,8 +3,6 @@
 import { db } from "@/lib/db";
 
 export const addToCart = async (cartId: string, bookId: string) => {
-  console.log(cartId);
-  console.log(bookId);
   const exist = await db.cartBook.findFirst({
     where: {
       cartId: cartId,

@@ -143,7 +143,6 @@ const AddProductForm = () => {
   };
 
   const uploadCoverImage = (values: z.infer<typeof BookSchema>) => {
-    console.log("upload cover image");
     if (coverImageLocal == null) {
       uploadBook(values);
       // onSubmit(values);
@@ -166,7 +165,6 @@ const AddProductForm = () => {
   };
 
   const uploadPreviewImage = async (bookId: string) => {
-    console.log("upload preview image");
     if (previewImage == null) {
       return;
     }
@@ -190,13 +188,9 @@ const AddProductForm = () => {
 
   const addPreviewImageToDatabase = async (url: string, bookId: string) => {
     const res = await addBookPreviewImage_v2(url, bookId);
-    console.log(res);
   };
 
   const uploadBook = async (values: z.infer<typeof BookSchema>) => {
-    console.log("upload book");
-    console.log(bookFile);
-    console.log(values);
     if (bookFile == null) {
       onSubmit(values);
       return;
@@ -215,7 +209,6 @@ const AddProductForm = () => {
   };
 
   const createGenreTagBook = async (bookId: string) => {
-    console.log("add genre tag book");
     if (bookGenreTag == null) {
       return;
     }
@@ -242,7 +235,6 @@ const AddProductForm = () => {
     // add product return product id
     addProduct(values)
       .then((res) => {
-        console.log(res);
         if (res) {
           // upload preview image
           uploadPreviewImage(res.id);

@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
 
+
 const AddCategoryForm = () => {
   const user = useCurrentUser();
   const [error, setError] = useState<string | undefined>("");

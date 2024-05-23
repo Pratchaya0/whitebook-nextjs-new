@@ -1,8 +1,26 @@
+"use client";
+
 import AddDialogButton from "@/components/admin/add-dialog-button";
 import AddCategoryForm from "@/components/admin/categories/add-category-form";
 import CategoriesTable from "@/components/admin/categories/table";
+import { getListCategories } from "@/data/category";
+import { Category } from "@prisma/client";
+import { useEffect, useState, useTransition } from "react";
 
-const CategoriesPage = async () => {
+const CategoriesClient = async () => {
+  const [data, setData] = useState<Category[]>([]);
+  const [isPending, startTransition] = useTransition();
+  const fetchCategory = async () => {
+    const data = await getListCategories();
+    setData(data as Category[]);
+  };
+
+  useEffect(() => {
+    startTransition(() => {
+      fetchCategory();
+    });
+  }, []);
+
   return (
     <>
       <div className="flex items-center justify-between gap-x-8">
@@ -20,4 +38,4 @@ const CategoriesPage = async () => {
   );
 };
 
-export default CategoriesPage;
+export default CategoriesClient;

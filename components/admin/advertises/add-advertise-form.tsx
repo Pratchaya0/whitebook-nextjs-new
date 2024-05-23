@@ -31,7 +31,6 @@ const AddAdvertiseForm = () => {
   const [imageLocal, setImageLocal] = useState<File | null>(null);
 
   const uploadImage = (values: z.infer<typeof AdvertisementSchema>) => {
-    console.log("upload image");
     if (imageLocal == null) {
       onSubmit(values);
       return;

@@ -134,7 +134,6 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const payment = row.original;
 
-      console.log(payment);
       return (
         <div className="flex items-right justify-end gap-x-2">
           {/* <FaUserAltSlash /> */}

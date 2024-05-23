@@ -60,7 +60,6 @@ const InfoForm = () => {
   });
 
   const handleUpdateImage = async (values: z.infer<typeof SettingsSchema>) => {
-    console.log("upload profile image");
     if (image == null) {
       onSubmit(values);
       return;

@@ -39,6 +39,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getListPayments } from "@/data/payment";
+import { useCountCart } from "@/hooks/use-cart-count";
 
 interface CartCheckoutFormProps {
   amount: number;
@@ -47,6 +48,7 @@ interface CartCheckoutFormProps {
 const CartCheckoutForm = ({ amount }: CartCheckoutFormProps) => {
   const user = useCurrentUser();
   const cartId = useCurrentCart();
+  const { removeAll } = useCountCart();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -71,7 +73,6 @@ const CartCheckoutForm = ({ amount }: CartCheckoutFormProps) => {
   const [imageLocal, setImageLocal] = useState<File | null>(null);
 
   const uploadSlip = (values: z.infer<typeof OrderSchema>) => {
-    console.log("upload slip");
     if (imageLocal == null) return;
 
     const imageRef = ref(storage, `payments/${v4()}`);
@@ -115,6 +116,7 @@ const CartCheckoutForm = ({ amount }: CartCheckoutFormProps) => {
             if (res?.success) {
               form?.reset();
               setSuccess(res?.success);
+              removeAll();
               resolve({ res: res?.success });
             }
           })
@@ -170,7 +172,7 @@ const CartCheckoutForm = ({ amount }: CartCheckoutFormProps) => {
                       placeholder="New category name..."
                       {...field}
                       readOnly
-                  />
+                    />
                   </FormControl>
                   <FormDescription>
                     This is your user id (auto field).
@@ -220,7 +222,6 @@ const CartCheckoutForm = ({ amount }: CartCheckoutFormProps) => {
                           event.target.files && event.target.files[0];
                         if (file) {
                           setImageLocal(file);
-                          console.log(file);
                         }
                       }}
                     />
