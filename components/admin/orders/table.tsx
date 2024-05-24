@@ -166,7 +166,7 @@ export const columns: ColumnDef<Order>[] = [
       const router = useRouter();
 
       return (
-        <div className="flex items-left justify-start gap-x-2">
+        <div className="flex items-right justify-end gap-x-2">
           <TooltipProvider>
             {data.isPaid ? (
               <Tooltip>

@@ -93,7 +93,7 @@ export const columns: ColumnDef<Category>[] = [
       const data = row.original;
 
       return (
-        <div className="flex items-right justify-end gap-x-2">
+        <div className="flex items-left justify-start gap-x-2">
           <UpdateDialogButton title="Update">
             <UpdateCategoryForm category={data} />
           </UpdateDialogButton>

@@ -102,7 +102,7 @@ export const sendOrderCreatedEmailToAdmin = async (
   orderId: string
 ) => {
   console.log(email);
-  const orderDetailLink = `${domain}/services/order-details/${orderId}`;
+  const orderDetailLink = `${domain}/services/order-detail/${orderId}`;
 
   const transport = nodemailer.createTransport({
     service: "gmail",
@@ -137,7 +137,7 @@ export const sendConfirmedOrderEmailToUser = async (
   orderId: string
 ) => {
   console.log(email);
-  const orderDetailLink = `${domain}/services/order-details/${orderId}`;
+  const orderDetailLink = `${domain}/services/order-detail/${orderId}`;
 
   const transport = nodemailer.createTransport({
     service: "gmail",

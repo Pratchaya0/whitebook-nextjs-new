@@ -116,7 +116,7 @@ export const columns: ColumnDef<Order>[] = [
         {row.getValue("isPaid") === true ? (
           <Badge variant="green">Paid</Badge>
         ) : (
-          <Badge variant="outline">Waiting</Badge>
+          <Badge variant="outline">Pending</Badge>
         )}
       </div>
     ),

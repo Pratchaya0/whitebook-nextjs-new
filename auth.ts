@@ -48,6 +48,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return true;
     },
+    async redirect({ url, baseUrl }) {
+      console.log(url);
+      console.log(baseUrl);
+      return baseUrl;
+    },
     async session({ token, session }) {
       if (token.sub && session.user) {
         session.user.id = token.sub;
