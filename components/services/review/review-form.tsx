@@ -32,6 +32,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { checkReviewByUserIdAndBookId } from "@/data/review";
 import { useRouter } from "next/navigation";
 import { FaReadme } from "react-icons/fa";
+import { Review } from "@prisma/client";
 
 interface ReviewFormProps {
   bookId: string;
@@ -72,7 +73,6 @@ const ReviewForm = ({ bookId }: ReviewFormProps) => {
       checkIsYourOwnBook();
     });
   }, []);
-
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof ReviewSchema>>({

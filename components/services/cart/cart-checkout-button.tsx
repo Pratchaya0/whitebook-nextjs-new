@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { FaRegCreditCard } from "react-icons/fa";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CartCheckoutButtonProps {
   children: React.ReactNode;
@@ -18,7 +19,9 @@ const CartCheckoutButton = ({ children }: CartCheckoutButtonProps) => {
         </Button>
       </DialogTrigger>
       <DialogContent className="p-0 w-auto bg-transparent border-none">
-        {children}
+        <ScrollArea className="h-[650px] rounded-md border">
+          {children}
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

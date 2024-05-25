@@ -6,6 +6,7 @@ import { getUserById } from "@/data/user";
 import { getTwoFactorConfirmationByUserId } from "@/data/two-factor-confirmation";
 import { getAccountByUserId } from "@/data/account";
 import { getCartByUserId } from "@/data/cart";
+import { redirect } from "next/dist/server/api-utils";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {

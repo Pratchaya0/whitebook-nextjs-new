@@ -44,7 +44,7 @@ const Header = ({ label = "E-book marketplace", webName }: HeaderProps) => {
         <div>
           {users && <UserButton />}
           {!users && (
-            <LoginButton mode="model" asChild>
+            <LoginButton mode="redirect" asChild>
               <Button variant="secondary" size="lg">
                 Sign in
               </Button>

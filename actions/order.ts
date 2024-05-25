@@ -1,12 +1,13 @@
 "use server";
 
-import { getListBooksInCartByCartId } from "@/data/book";
+import { getBookByBookId, getListBooksInCartByCartId } from "@/data/book";
 import { db } from "@/lib/db";
 import {
   sendConfirmedOrderEmailToUser,
   sendOrderCreatedEmailToAdmin,
 } from "@/lib/mail";
 import { OrderSchema } from "@/schemas";
+import { Book } from "@prisma/client";
 import * as z from "zod";
 
 export const updateOrderIsPaid = async (
@@ -125,9 +126,9 @@ export const createOrder = async (
       },
     });
   } catch (error) {
-    {
-      error: "error: deleteCartBook";
-    }
+    return {
+      error: "error: deleteCartBook",
+    };
   }
 
   // Get all admin in database
@@ -136,7 +137,99 @@ export const createOrder = async (
       role: "ADMIN",
     },
   });
-  
+
+  // Send email alert to admin
+  if (admins) {
+    admins.forEach(async (admin) => {
+      await sendOrderCreatedEmailToAdmin(
+        admin.email as string,
+        orderCreated.id
+      );
+    });
+  }
+
+  return { success: "Successful!" };
+};
+
+export const createOrder_v2 = async (
+  values: z.infer<typeof OrderSchema>,
+  cartId: string,
+  bookIds: string[]
+) => {
+  const validatedFields = OrderSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    return { error: "Invalid fields!" };
+  }
+
+  const { amount, userId, paymentImageUrl } = validatedFields.data;
+
+  try {
+    await db.order.create({
+      data: {
+        amount: amount,
+        userId: userId,
+        paymentImageUrl: paymentImageUrl,
+      },
+    });
+  } catch (error) {
+    return { error: "error: Create order" };
+  }
+
+  // get order
+  const orderCreated = await db.order.findFirst({
+    orderBy: {
+      createdDate: "desc",
+    },
+  });
+  if (!orderCreated) {
+    return { error: "error: orderCreated" };
+  }
+
+  let booksExistInCart: Book[] = [];
+  const bookPromises = bookIds.map(async (bookId) => {
+    console.log(bookId);
+    const data = await getBookByBookId(bookId);
+    return data as Book;
+  });
+
+  booksExistInCart = await Promise.all(bookPromises);
+
+  if (!booksExistInCart) {
+    return { error: "error: booksExistInCart" };
+  }
+
+  // create detail order and buyer(owner)
+  booksExistInCart.forEach(async (book) => {
+    await db.$transaction([
+      db.orderBook.create({
+        data: {
+          orderId: orderCreated.id,
+          bookId: book.id,
+        },
+      }),
+      db.bookBuyer.create({
+        data: {
+          userId: userId,
+          bookId: book.id,
+        },
+      }),
+      db.cartBook.deleteMany({
+        where: {
+          bookId: book.id,
+          cartId: cartId,
+        },
+      }),
+    ]);
+  });
+
+  // Get all admin in database
+  const admins = await db.user.findMany({
+    where: {
+      role: "ADMIN",
+    },
+  });
+
   // Send email alert to admin
   if (admins) {
     admins.forEach(async (admin) => {

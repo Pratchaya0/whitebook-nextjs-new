@@ -29,7 +29,7 @@ import { useCurrentCart } from "@/hooks/use-current-cart";
 import { getDownloadURL, list, ref, uploadBytes } from "firebase/storage";
 import { storage } from "@/lib/firebase";
 import { v4 } from "uuid";
-import { createOrder } from "@/actions/order";
+import { createOrder, createOrder_v2 } from "@/actions/order";
 import {
   Table,
   TableBody,
@@ -40,15 +40,18 @@ import {
 } from "@/components/ui/table";
 import { getListPayments } from "@/data/payment";
 import { useCountCart } from "@/hooks/use-cart-count";
+import CheckOutList from "../checkout/checkout-list";
+import { getCountBookInCartByCartId } from "@/data/cart-book";
 
 interface CartCheckoutFormProps {
   amount: number;
+  bookIds: string[];
 }
 
-const CartCheckoutForm = ({ amount }: CartCheckoutFormProps) => {
+const CartCheckoutForm = ({ amount, bookIds }: CartCheckoutFormProps) => {
   const user = useCurrentUser();
   const cartId = useCurrentCart();
-  const { removeAll } = useCountCart();
+  const { update } = useCountCart();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -63,9 +66,14 @@ const CartCheckoutForm = ({ amount }: CartCheckoutFormProps) => {
     setPayments(data as PaymentInformation[]);
   };
 
+  const getCartCount = async () => {
+    const count = await getCountBookInCartByCartId(cartId as string);
+    // setNumOfBookInCart(count as number);
+    update(count);
+  };
+
   useEffect(() => {
     startTransition(() => {
-      fetchSumOfAllBooks();
       fetchPayment();
     });
   }, []);
@@ -106,7 +114,7 @@ const CartCheckoutForm = ({ amount }: CartCheckoutFormProps) => {
 
     toast.promise(
       new Promise((resolve, reject) => {
-        createOrder(values, cartId as string)
+        createOrder_v2(values, cartId as string, bookIds)
           .then((res) => {
             if (res?.error) {
               form.reset();
@@ -116,7 +124,7 @@ const CartCheckoutForm = ({ amount }: CartCheckoutFormProps) => {
             if (res?.success) {
               form?.reset();
               setSuccess(res?.success);
-              removeAll();
+              getCartCount();
               resolve({ res: res?.success });
             }
           })
@@ -141,7 +149,9 @@ const CartCheckoutForm = ({ amount }: CartCheckoutFormProps) => {
         <CardTitle>Checkout</CardTitle>
       </CardHeader>
       <CardContent>
-        <Table>
+        <CheckOutList bookIds={bookIds} amount={amount} />
+        <hr className="m-2" />
+        <Table className="bg-emerald-300">
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">Payment</TableHead>

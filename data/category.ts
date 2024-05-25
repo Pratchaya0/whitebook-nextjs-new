@@ -4,7 +4,11 @@ import { db } from "@/lib/db";
 
 export const getListCategories = async () => {
   try {
-    const categories = await db.category.findMany();
+    const categories = await db.category.findMany({
+      orderBy: {
+        createdDate: "desc",
+      },
+    });
 
     return categories;
   } catch (error) {

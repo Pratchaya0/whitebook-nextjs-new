@@ -36,13 +36,17 @@ import {
 import { User } from "@prisma/client";
 import { FaAngleDown, FaBars, FaRedoAlt } from "react-icons/fa";
 import { useEffect, useState, useTransition } from "react";
-import { getListUsers } from "@/data/user";
+import {
+  UserWithAmountType,
+  getListUserWithAmount,
+  getListUsers,
+} from "@/data/user";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import header from "@/components/auth/header";
 import { getSumAllOrderAmountByUserId } from "@/data/order";
 
-export const columns: ColumnDef<UsersTableType>[] = [
+export const columns: ColumnDef<UserWithAmountType>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -111,21 +115,8 @@ export const columns: ColumnDef<UsersTableType>[] = [
   },
   {
     accessorKey: "amount",
-    header: "Amount",
-    cell: ({ row }) => {
-      const [amount, setAmount] = useState<number>();
-      const [isPending, startTransition] = useTransition();
-      const fetchAmount = async () => {
-        const data = await getSumAllOrderAmountByUserId(row.getValue("id"));
-        setAmount(data);
-      };
-
-      startTransition(() => {
-        fetchAmount();
-      });
-
-      return <div>{isPending ? "Loading..." : `${amount} ฿`}</div>;
-    },
+    header: "Total",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("amount")} ฿</div>,
   },
   {
     accessorKey: "role",
@@ -177,23 +168,14 @@ export const columns: ColumnDef<UsersTableType>[] = [
   },
 ];
 
-type UsersTableType = {
-  id: string;
-  name: string | null;
-  email: string | null;
-  emailVerified: Date | null;
-  image: string | null;
-  password: string | null;
-  role: string | null;
-  isTwoFactorEnabled: boolean;
-  amount: number | null;
-};
-
 const UsersTable = () => {
-  const [data, setData] = useState<UsersTableType[]>([]);
+  const [data, setData] = useState<UserWithAmountType[]>([]);
   const user = async () => {
-    const data = await getListUsers();
-    setData(data as UsersTableType[]);
+    // const data = await getListUsers();
+    // setData(data as User[]);
+
+    const data = await getListUserWithAmount();
+    setData(data as UserWithAmountType[]);
   };
 
   useEffect(() => {

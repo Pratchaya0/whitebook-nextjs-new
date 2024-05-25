@@ -24,7 +24,7 @@ const NewVerificationForm = () => {
     newVerification(token)
       .then((data) => {
         setSuccess(data?.success);
-        // setError(data?.error);
+        setError(data?.success);
       })
       .catch(() => {
         setError("Something went wrong!");
@@ -43,8 +43,8 @@ const NewVerificationForm = () => {
       backButtonHref="/auth/login"
     >
       <div className="flex items-center w-full justify-center">
-        {!success && !error && <BeatLoader />}
-        <FormSuccess message={success} />
+        {/* {!success && !error && <BeatLoader />} */}
+        <FormSuccess message={"Your email is verified!"} />
         {/* <FormError message={error} /> */}
       </div>
     </CardWrapper>

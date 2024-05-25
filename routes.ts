@@ -16,9 +16,10 @@ export const publicRoutes = [
  */
 export const authRoutes = [
   "/auth/login",
+  "/auth/logout",
   "/auth/register",
   "/auth/error",
-  "/auth/reset",
+  "/auth/reset",  
   "/auth/new-password",
 ];
 
@@ -34,4 +35,4 @@ export const bookDetailRoute = "/services/book-detail";
  * The default redirect path after logging in
  * @type {string}
  */
-export const DEFAULT_LOGIN_REDIRECT = "/settings";
+export const DEFAULT_LOGIN_REDIRECT = "/";

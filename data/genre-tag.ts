@@ -3,7 +3,11 @@ import { db } from "@/lib/db";
 
 export const getListGenreTag = async () => {
   try {
-    const genreTag = await db.genreTag.findMany();
+    const genreTag = await db.genreTag.findMany({
+      orderBy: {
+        createdDate: "desc",
+      },
+    });
 
     return genreTag;
   } catch (error) {

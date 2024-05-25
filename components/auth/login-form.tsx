@@ -22,6 +22,7 @@ import { useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
+import { signIn } from "next-auth/react";
 
 const LoginForm = () => {
   const searchParams = useSearchParams();
@@ -57,22 +58,26 @@ const LoginForm = () => {
               if (res?.error) {
                 form.reset();
                 setError(res?.error);
+                // resolve({ res: res.error });
                 reject();
               }
 
               if (res?.success) {
                 form?.reset();
                 setSuccess(res?.success);
+                resolve({ res: res.success });
               }
 
               if (res?.twoFactor) {
                 setShowTwoFactor(true);
               }
+
+              resolve({ res: "Welcome back!" });
             })
             .catch(() => {
+              reject();
               setError("Something went wrong!");
             });
-          resolve({ res: "Temp" });
         });
       }),
       {

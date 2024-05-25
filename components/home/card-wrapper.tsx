@@ -12,6 +12,8 @@ import Footer from "@/components/home/footer";
 import { useEffect, useState, useTransition } from "react";
 import { getWebInformation } from "@/data/webinfo";
 import { WebInformation } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { getSession, useSession } from "next-auth/react";
 
 interface CardWrapperProps {
   children: React.ReactNode;
@@ -28,6 +30,8 @@ const CardWrapper = ({
   const fetchWebInfo = async () => {
     const data = await getWebInformation();
     setData(data as WebInformation);
+    const session = await getSession();
+    console.log(session);
   };
   const [isPending, startTransition] = useTransition();
   useEffect(() => {

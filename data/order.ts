@@ -35,6 +35,9 @@ export const getOrderByUserId = async (userId: string) => {
   try {
     const orders = await db.order.findMany({
       where: { userId: userId },
+      orderBy: {
+        createdDate: "desc",
+      },
     });
 
     return orders;

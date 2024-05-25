@@ -8,6 +8,9 @@ export const getReviewsByBookId = async (bookId: string) => {
       where: {
         bookId: bookId,
       },
+      orderBy: {
+        craeteDate: "desc",
+      },
     });
 
     return reviews;

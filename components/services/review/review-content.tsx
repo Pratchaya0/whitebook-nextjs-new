@@ -41,9 +41,13 @@ const ReviewContent = ({ bookId }: ReviewContentProps) => {
                 return (
                   <TableRow key={index}>
                     <TableCell className="">
-                      <p className="font-bold">
-                        <ReviewUser userId={_.userId as string} />
-                      </p>
+                      <div className="font-bold">
+                        <ReviewUser
+                          userId={_.userId as string}
+                          review={_}
+                          fetchReviewData={fetchReviews}
+                        />
+                      </div>
                       <p>{_.comment}</p>
                     </TableCell>
                   </TableRow>

@@ -24,6 +24,8 @@ import { deleteBookFromCartByCartIdAndBookId } from "@/actions/cart";
 import { toast } from "sonner";
 import CartCheckoutForm from "@/components/services/cart/cart-checkout-form";
 import { useCountCart } from "@/hooks/use-cart-count";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const CartBookList = () => {
   const cartId = useCurrentCart();
@@ -31,6 +33,35 @@ const CartBookList = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [sumOfAllBooks, setSumOfAllBooks] = useState<number>();
   const [isPending, startTransition] = useTransition();
+  const [selectedBooks, setSelectedBooks] = useState<string[]>([]);
+
+  const sumAllSelectedBook = async () => {
+    const data = books
+      .filter((item) => selectedBooks.includes(item.id))
+      .map((item) => item.price);
+
+    let amount = 0;
+    data.forEach((_) => {
+      amount += parseFloat(_!);
+    });
+    setSumOfAllBooks(amount as number);
+  };
+
+  const removeSelectedBooks = (status: boolean, bookId: string) => {
+    // Check if the item exists in the array
+    if (selectedBooks.includes(bookId) && status === false) {
+      // Filter out the item from the array
+      const updatedItems = selectedBooks.filter((item) => item !== bookId);
+      // Update the state with the new array
+      setSelectedBooks(updatedItems);
+    }
+  };
+
+  const addSelectedBooks = (status: boolean, bookId: string) => {
+    if (!selectedBooks.includes(bookId) && status === true) {
+      setSelectedBooks((prev) => [...prev, bookId]);
+    }
+  };
 
   const fetchBooks = async () => {
     const data = await getListBooksInCartByCartId(cartId as string);
@@ -44,9 +75,16 @@ const CartBookList = () => {
   useEffect(() => {
     startTransition(() => {
       fetchBooks();
-      fetchSumOfAllBooks();
+      sumAllSelectedBook();
+      // fetchSumOfAllBooks();
     });
   }, []);
+
+  useEffect(() => {
+    startTransition(() => {
+      sumAllSelectedBook();
+    });
+  }, [selectedBooks]);
 
   return (
     <>
@@ -54,7 +92,18 @@ const CartBookList = () => {
         {/* <TableCaption>A list of your book in cart</TableCaption> */}
         <TableHeader>
           <TableRow>
-            {/* <TableHead className="w-[100px]">Id</TableHead> */}
+            <TableHead className="w-[50px]">
+              <Checkbox
+                onCheckedChange={(_) => {
+                  if (_) {
+                    const selectAllItems = books.map((book) => book.id);
+                    setSelectedBooks(selectAllItems);
+                  } else {
+                    setSelectedBooks([]);
+                  }
+                }}
+              />
+            </TableHead>
             <TableHead className="w-[100px]">Cover Image</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Description</TableHead>
@@ -66,6 +115,23 @@ const CartBookList = () => {
           {books.map((book) => (
             <TableRow key={book.id}>
               {/* <TableCell className="font-medium">{book.id}</TableCell> */}
+              <TableCell>
+                <Checkbox
+                  checked={selectedBooks.includes(book.id)}
+                  onCheckedChange={(_) => {
+                    console.log(_);
+                    switch (_) {
+                      case true:
+                        addSelectedBooks(_ as boolean, book.id);
+                        break;
+
+                      default:
+                        removeSelectedBooks(_ as boolean, book.id);
+                        break;
+                    }
+                  }}
+                />
+              </TableCell>
               <TableCell>
                 <div>
                   <img
@@ -119,7 +185,7 @@ const CartBookList = () => {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
+            <TableCell colSpan={4}>Total</TableCell>
             <TableCell className="text-right">{sumOfAllBooks} ฿</TableCell>
           </TableRow>
         </TableFooter>
@@ -139,10 +205,19 @@ const CartBookList = () => {
           <FaRedoAlt />
         </Button>
         {isPending || sumOfAllBooks === 0 ? (
-          <div></div>
+          <div className="w-[330px]">
+            <Alert variant="green">
+              <AlertDescription>
+                Please select some item before check out :)
+              </AlertDescription>
+            </Alert>
+          </div>
         ) : (
           <CartCheckoutButton>
-            <CartCheckoutForm amount={sumOfAllBooks as number} />
+            <CartCheckoutForm
+              amount={sumOfAllBooks as number}
+              bookIds={selectedBooks}
+            />
           </CartCheckoutButton>
         )}
       </div>
