@@ -162,6 +162,9 @@ const PaymentTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    onStateChange(updater) {
+      payment();
+    },
     state: {
       sorting,
       columnFilters,

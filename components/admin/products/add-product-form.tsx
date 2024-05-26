@@ -41,6 +41,7 @@ import { Category, GenreTag, GenreTagBook } from "@prisma/client";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { v4 } from "uuid";
 import * as z from "zod";
 
@@ -233,20 +234,32 @@ const AddProductForm = () => {
 
   async function onSubmit(values: z.infer<typeof BookSchema>) {
     // add product return product id
-    addProduct(values)
-      .then((res) => {
-        if (res) {
-          // upload preview image
-          uploadPreviewImage(res.id);
-          // upload genre tag
-          createGenreTagBook(res.id);
+    toast.promise(
+      new Promise((resolve) => {
+        addProduct(values)
+          .then((res) => {
+            if (res) {
+              // upload preview image
+              uploadPreviewImage(res.id);
+              // upload genre tag
+              createGenreTagBook(res.id);
 
-          setSuccess("Product Added");
-        }
-      })
-      .catch(() => {
-        setError("Something went wrong!");
-      });
+              setSuccess("Product Added");
+            }
+          })
+          .catch(() => {
+            setError("Something went wrong!");
+          });
+        resolve({ res: "Temp" });
+      }),
+      {
+        loading: "Loading...",
+        success: (data) => {
+          return `Process has done!`;
+        },
+        error: "Oops! what's wrong?",
+      }
+    );
   }
 
   return (

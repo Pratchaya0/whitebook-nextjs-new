@@ -69,23 +69,22 @@ const AddAdvertiseForm = () => {
 
     toast.promise(
       new Promise((resolve) => {
-        startTransition(() => {
-          addAdvertise(values)
-            .then((res) => {
-              if (res?.error) {
-                form.reset();
-                setError(res?.error);
-              }
+        addAdvertise(values)
+          .then((res) => {
+            if (res?.error) {
+              form.reset();
+              setError(res?.error);
+            }
 
-              if (res?.success) {
-                form?.reset();
-                setSuccess(res?.success);
-              }
-            })
-            .catch(() => {
-              setError("Something went wrong!");
-            });
-        });
+            if (res?.success) {
+              form?.reset();
+              setSuccess(res?.success);
+            }
+          })
+          .catch(() => {
+            setError("Something went wrong!");
+          });
+
         resolve({ res: "Temp" });
       }),
       {

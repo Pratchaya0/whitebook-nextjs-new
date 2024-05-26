@@ -24,15 +24,18 @@ import { WebInformation } from "@prisma/client";
 import { getWebInformation } from "@/data/webinfo";
 import { updateWebInfo } from "@/actions/webinfo";
 import { FaRedoAlt } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 interface UpdateWebInfoFormProps {
   webinfo: WebInformation;
+  fetchData: () => void;
 }
 
-const UpdateWebInfoForm = ({ webinfo }: UpdateWebInfoFormProps) => {
+const UpdateWebInfoForm = ({ webinfo, fetchData }: UpdateWebInfoFormProps) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof WebInformationSchema>>({
@@ -54,26 +57,27 @@ const UpdateWebInfoForm = ({ webinfo }: UpdateWebInfoFormProps) => {
 
     toast.promise(
       new Promise((resolve) => {
-        startTransition(() => {
-          updateWebInfo(values)
-            .then((res) => {
-              if (res?.error) {
-                setError(res?.error);
-              }
+        updateWebInfo(values)
+          .then((res) => {
+            if (res?.error) {
+              setError(res?.error);
+            }
 
-              if (res?.success) {
-                setSuccess(res?.success);
-              }
-            })
-            .catch(() => {
-              setError("Something went wrong!");
-            });
-        });
+            if (res?.success) {
+              router.refresh();
+              setSuccess(res?.success);
+            }
+          })
+          .catch(() => {
+            setError("Something went wrong!");
+          });
+
         resolve({ res: "Temp" });
       }),
       {
         loading: "Loading...",
         success: (data) => {
+          // fetchData();
           return `Process has done!`;
         },
         error: "Oops! what's wrong?",

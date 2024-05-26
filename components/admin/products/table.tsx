@@ -143,9 +143,7 @@ export const columns: ColumnDef<Book>[] = [
   {
     accessorKey: "bookUrl",
     header: "Book Url",
-    cell: ({ row }) => (
-      <div className="">{row.getValue("bookUrl")}</div>
-    ),
+    cell: ({ row }) => <div className="">{row.getValue("bookUrl")}</div>,
   },
   // {
   //   accessorKey: "categoryId",
@@ -319,6 +317,9 @@ const ProductsTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    onStateChange(updater) {
+      book();
+    },
     state: {
       sorting,
       columnFilters,

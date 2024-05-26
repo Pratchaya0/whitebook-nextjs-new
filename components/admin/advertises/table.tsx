@@ -86,7 +86,12 @@ export const columns: ColumnDef<Advertisement>[] = [
     header: "Image",
     cell: ({ row }) => (
       <div>
-        <Image src={row.getValue("advertiseImageUrl")} alt={row.original.id} width={100} height={150}/>
+        <Image
+          src={row.getValue("advertiseImageUrl")}
+          alt={row.original.id}
+          width={100}
+          height={150}
+        />
       </div>
     ),
   },
@@ -172,6 +177,9 @@ const AdvertiseTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    onStateChange(updater) {
+      advertises();
+    },
     state: {
       sorting,
       columnFilters,

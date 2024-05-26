@@ -119,7 +119,7 @@ const UpdateGenreTagForm = ({ genreTag }: UpdateGenreTagFormProps) => {
             <FormError message={error} />
             <FormSuccess message={success} />
             <Button type="submit" disabled={isPending}>
-              {isPending ? "Creating..." : "Create"}
+              {isPending ? "Updating..." : "Update"}
             </Button>
           </form>
         </Form>

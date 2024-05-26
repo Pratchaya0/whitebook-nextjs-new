@@ -168,6 +168,9 @@ const CategoriesTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    onStateChange(updater) {
+      category();
+    },
     state: {
       sorting,
       columnFilters,

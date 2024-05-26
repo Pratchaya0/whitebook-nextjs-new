@@ -48,23 +48,22 @@ const UpdatePaymentForm = ({ payment }: UpdateAdvertiseFormProps) => {
 
     toast.promise(
       new Promise((resolve) => {
-        startTransition(() => {
-          updatePayment(values, payment.id)
-            .then((res) => {
-              if (res?.error) {
-                form.reset();
-                setError(res?.error);
-              }
+        updatePayment(values, payment.id)
+          .then((res) => {
+            if (res?.error) {
+              form.reset();
+              setError(res?.error);
+            }
 
-              if (res?.success) {
-                form?.reset();
-                setSuccess(res?.success);
-              }
-            })
-            .catch(() => {
-              setError("Something went wrong!");
-            });
-        });
+            if (res?.success) {
+              form?.reset();
+              setSuccess(res?.success);
+            }
+          })
+          .catch(() => {
+            setError("Something went wrong!");
+          });
+
         resolve({ res: "Temp" });
       }),
       {

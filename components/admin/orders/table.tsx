@@ -188,6 +188,7 @@ export const columns: ColumnDef<Order>[] = [
                         {
                           loading: "Loading...",
                           success: (data: any) => {
+                            router.refresh();
                             return `${data.res as string}`;
                           },
                           error: "Oops! what's wrong?",
@@ -297,6 +298,9 @@ const OrdersTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    onStateChange(updater) {
+      order();
+    },
     state: {
       sorting,
       columnFilters,

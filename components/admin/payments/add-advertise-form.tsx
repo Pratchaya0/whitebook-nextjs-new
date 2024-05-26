@@ -44,23 +44,22 @@ const AddPaymentForm = () => {
 
     toast.promise(
       new Promise((resolve) => {
-        startTransition(() => {
-          addPayment(values)
-            .then((res) => {
-              if (res?.error) {
-                form.reset();
-                setError(res?.error);
-              }
+        addPayment(values)
+          .then((res) => {
+            if (res?.error) {
+              form.reset();
+              setError(res?.error);
+            }
 
-              if (res?.success) {
-                form?.reset();
-                setSuccess(res?.success);
-              }
-            })
-            .catch(() => {
-              setError("Something went wrong!");
-            });
-        });
+            if (res?.success) {
+              form?.reset();
+              setSuccess(res?.success);
+            }
+          })
+          .catch(() => {
+            setError("Something went wrong!");
+          });
+
         resolve({ res: "Temp" });
       }),
       {

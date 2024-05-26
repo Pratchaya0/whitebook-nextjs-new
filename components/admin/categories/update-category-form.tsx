@@ -51,23 +51,21 @@ const UpdateCategoryForm = ({ category }: UpdateCategoryFormProps) => {
 
     toast.promise(
       new Promise((resolve) => {
-        startTransition(() => {
-          updateCategory(values, category.id)
-            .then((res) => {
-              if (res?.error) {
-                form.reset();
-                setError(res?.error);
-              }
+        updateCategory(values, category.id)
+          .then((res) => {
+            if (res?.error) {
+              form.reset();
+              setError(res?.error);
+            }
 
-              if (res?.success) {
-                form?.reset();
-                setSuccess(res?.success);
-              }
-            })
-            .catch(() => {
-              setError("Something went wrong!");
-            });
-        });
+            if (res?.success) {
+              form?.reset();
+              setSuccess(res?.success);
+            }
+          })
+          .catch(() => {
+            setError("Something went wrong!");
+          });
         resolve({ res: "Temp" });
       }),
       {
@@ -120,7 +118,7 @@ const UpdateCategoryForm = ({ category }: UpdateCategoryFormProps) => {
             <FormError message={error} />
             <FormSuccess message={success} />
             <Button type="submit" disabled={isPending}>
-              {isPending ? "Creating..." : "Create"}
+              {isPending ? "Updating..." : "Update"}
             </Button>
           </form>
         </Form>

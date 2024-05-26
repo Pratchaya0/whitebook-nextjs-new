@@ -23,7 +23,6 @@ import { toast } from "sonner";
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
 
-
 const AddCategoryForm = () => {
   const user = useCurrentUser();
   const [error, setError] = useState<string | undefined>("");
@@ -47,23 +46,22 @@ const AddCategoryForm = () => {
 
     toast.promise(
       new Promise((resolve) => {
-        startTransition(() => {
-          addNewCategory(values)
-            .then((res) => {
-              if (res?.error) {
-                form.reset();
-                setError(res?.error);
-              }
+        addNewCategory(values)
+          .then((res) => {
+            if (res?.error) {
+              form.reset();
+              setError(res?.error);
+            }
 
-              if (res?.success) {
-                form?.reset();
-                setSuccess(res?.success);
-              }
-            })
-            .catch(() => {
-              setError("Something went wrong!");
-            });
-        });
+            if (res?.success) {
+              form?.reset();
+              setSuccess(res?.success);
+            }
+          })
+          .catch(() => {
+            setError("Something went wrong!");
+          });
+
         resolve({ res: "Temp" });
       }),
       {

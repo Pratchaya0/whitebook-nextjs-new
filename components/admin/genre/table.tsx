@@ -155,6 +155,9 @@ const GenreTagTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    onStateChange(updater) {
+      genreTag();
+    },
     state: {
       sorting,
       columnFilters,
