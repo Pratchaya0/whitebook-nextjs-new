@@ -46,24 +46,32 @@ import { getCountBookInCartByCartId } from "@/data/cart-book";
 interface CartCheckoutFormProps {
   amount: number;
   bookIds: string[];
+  refreshDetail: (bookId: string) => void;
 }
 
-const CartCheckoutForm = ({ amount, bookIds }: CartCheckoutFormProps) => {
+const CartCheckoutForm = ({
+  amount,
+  bookIds,
+  refreshDetail,
+}: CartCheckoutFormProps) => {
   const user = useCurrentUser();
   const cartId = useCurrentCart();
   const { update } = useCountCart();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-  const [sumOfAllBooks, setSumOfAllBooks] = useState<number>();
   const [payments, setPayments] = useState<PaymentInformation[]>([]);
-  const fetchSumOfAllBooks = async () => {
-    const data = await getSumOfAllBookInCartByCartId(cartId as string);
-    setSumOfAllBooks(data as number);
-  };
+
   const fetchPayment = async () => {
     const data = await getListPayments();
     setPayments(data as PaymentInformation[]);
+  };
+
+  const fetchBooks = async () => {
+    bookIds.forEach((item) => {
+      refreshDetail(item);
+    });
+    getCartCount();
   };
 
   const getCartCount = async () => {
@@ -136,7 +144,8 @@ const CartCheckoutForm = ({ amount, bookIds }: CartCheckoutFormProps) => {
       {
         loading: "Loading...",
         success: (data) => {
-          return `Process has done!`;
+          fetchBooks();
+          return `Check out success!`;
         },
         error: "Oops! what's wrong?",
       }

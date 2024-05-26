@@ -67,16 +67,17 @@ const CartBookList = () => {
     const data = await getListBooksInCartByCartId(cartId as string);
     setBooks(data as Book[]);
   };
-  const fetchSumOfAllBooks = async () => {
-    const data = await getSumOfAllBookInCartByCartId(cartId as string);
-    setSumOfAllBooks(data as number);
+
+  const refreshDetail = async (bookId: string) => {
+    fetchBooks();
+    removeSelectedBooks(false, bookId);
+    sumAllSelectedBook();
   };
 
   useEffect(() => {
     startTransition(() => {
       fetchBooks();
       sumAllSelectedBook();
-      // fetchSumOfAllBooks();
     });
   }, []);
 
@@ -168,6 +169,10 @@ const CartBookList = () => {
 
                             default:
                               decrease();
+                              refreshDetail(book.id);
+                              // fetchBooks();
+                              // removeSelectedBooks(false, book.id);
+                              // sumAllSelectedBook();
                               break;
                           }
                           return `${data.res as string}`;
@@ -191,19 +196,19 @@ const CartBookList = () => {
         </TableFooter>
       </Table>
       <div className="flex justify-end items-center mt-3 gap-x-2">
-        <Button
+        {/* <Button
           variant="secondary"
           className="ml-auto"
           disabled={isPending}
           onClick={() => {
             startTransition(() => {
               fetchBooks();
-              fetchSumOfAllBooks();
+              sumAllSelectedBook();
             });
           }}
         >
           <FaRedoAlt />
-        </Button>
+        </Button> */}
         {isPending || sumOfAllBooks === 0 ? (
           <div className="w-[330px]">
             <Alert variant="green">
@@ -217,6 +222,7 @@ const CartBookList = () => {
             <CartCheckoutForm
               amount={sumOfAllBooks as number}
               bookIds={selectedBooks}
+              refreshDetail={refreshDetail}
             />
           </CartCheckoutButton>
         )}
