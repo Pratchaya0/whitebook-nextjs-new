@@ -187,13 +187,13 @@ const PaymentTable = () => {
           className="max-w-sm"
         />
         <div className="flex justify-center items-center gap-x-4">
-          <Button
+          {/* <Button
             variant="secondary"
             className="ml-auto"
             onClick={() => payment()}
           >
             <FaRedoAlt />
-          </Button>
+          </Button> */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">

@@ -89,7 +89,6 @@ const UpdateAdvertiseForm = ({ advertise }: UpdateAdvertiseFormProps) => {
           .catch(() => {
             setError("Something went wrong!");
           });
-
         resolve({ res: "Temp" });
       }),
       {

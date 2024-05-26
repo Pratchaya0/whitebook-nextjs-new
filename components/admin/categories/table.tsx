@@ -40,7 +40,7 @@ import UpdateCategoryForm from "./update-category-form";
 import { toast } from "sonner";
 import { deleteCategory } from "@/actions/category";
 import { getListCategories } from "@/data/category";
-import { useEffect, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 
 export const columns: ColumnDef<Category>[] = [
   {
@@ -193,13 +193,13 @@ const CategoriesTable = () => {
           className="max-w-sm"
         />
         <div className="flex justify-center items-center gap-x-4">
-          <Button
+          {/* <Button
             variant="secondary"
             className="ml-auto"
             onClick={() => category()}
           >
             <FaRedoAlt />
-          </Button>
+          </Button> */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">

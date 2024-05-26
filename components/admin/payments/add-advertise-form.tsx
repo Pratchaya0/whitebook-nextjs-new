@@ -59,7 +59,6 @@ const AddPaymentForm = () => {
           .catch(() => {
             setError("Something went wrong!");
           });
-
         resolve({ res: "Temp" });
       }),
       {
