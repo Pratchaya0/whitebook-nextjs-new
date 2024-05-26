@@ -11,6 +11,7 @@ import ReviewUpdateForm from "./review-update-form";
 import { toast } from "sonner";
 import { deleteReview } from "@/actions/review";
 import { useRouter } from "next/navigation";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface ReviewUserProps {
   userId: string;
@@ -19,6 +20,7 @@ interface ReviewUserProps {
 }
 
 const ReviewUser = ({ userId, review, fetchReviewData }: ReviewUserProps) => {
+  const currentUser = useCurrentUser();
   const [user, setUser] = useState<User>();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -61,33 +63,35 @@ const ReviewUser = ({ userId, review, fetchReviewData }: ReviewUserProps) => {
         </Avatar>
         <div className="py-3">{user?.name}</div>
       </div>
-      <div className="flex justify-end items-end gap-x-2">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button size="sm" variant="secondary" className="h-8 p-x-2">
-              <div className="flex items-center justify-center gap-x-2">
-                <FaFileSignature className="h-3 w-3" />
-              </div>
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="p-0 w-auto bg-transparent border-none">
-            <ReviewUpdateForm
-              review={review}
-              fetchReviewData={fetchReviewData}
-            />
-          </DialogContent>
-        </Dialog>
-        <Button
-          size="sm"
-          variant="secondary"
-          className="h-8 p-x-2"
-          onClick={deleteReviewHandler}
-        >
-          <div className="flex items-center justify-center gap-x-2">
-            <FaTrash className="h-3 w-3 text-rose-500" />
-          </div>
-        </Button>
-      </div>
+      {currentUser?.id === userId && (
+        <div className="flex justify-end items-end gap-x-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size="sm" variant="secondary" className="h-8 p-x-2">
+                <div className="flex items-center justify-center gap-x-2">
+                  <FaFileSignature className="h-3 w-3" />
+                </div>
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="p-0 w-auto bg-transparent border-none">
+              <ReviewUpdateForm
+                review={review}
+                fetchReviewData={fetchReviewData}
+              />
+            </DialogContent>
+          </Dialog>
+          <Button
+            size="sm"
+            variant="secondary"
+            className="h-8 p-x-2"
+            onClick={deleteReviewHandler}
+          >
+            <div className="flex items-center justify-center gap-x-2">
+              <FaTrash className="h-3 w-3 text-rose-500" />
+            </div>
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

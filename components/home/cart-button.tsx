@@ -8,6 +8,7 @@ import { useEffect, useState, useTransition } from "react";
 import { FaShoppingBasket } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { useCountCart } from "@/hooks/use-cart-count";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 const CartButton = () => {
   const cardId = useCurrentCart();
@@ -15,11 +16,16 @@ const CartButton = () => {
   // const [numOfBookInCart, setNumOfBookInCart] = useState<number>();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const user = useCurrentUser();
 
   const getCartCount = async () => {
-    const count = await getCountBookInCartByCartId(cardId as string);
     // setNumOfBookInCart(count as number);
-    update(count);
+    if (user) {
+      const count = await getCountBookInCartByCartId(cardId as string);
+      update(count);
+    } else {
+      update(0);
+    }
   };
 
   useEffect(() => {

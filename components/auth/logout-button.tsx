@@ -3,6 +3,7 @@
 import { logout } from "@/actions/logout";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface LogoutButtonProps {
   children?: React.ReactNode;
@@ -14,7 +15,20 @@ const LogoutButton = ({ children }: LogoutButtonProps) => {
     // logout().then(() => {
     //   router.refresh();
     // });
-    signOut();
+    toast.promise(
+      new Promise((resolve) => {
+        signOut();
+        signOut();
+        resolve({ res: "Temp" });
+      }),
+      {
+        loading: "Loading...",
+        success: (data) => {
+          return `Logout Successful!`;
+        },
+        error: "Oops! what's wrong?",
+      }
+    );
   };
 
   return (
