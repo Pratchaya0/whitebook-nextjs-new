@@ -33,12 +33,14 @@ import { checkReviewByUserIdAndBookId } from "@/data/review";
 import { useRouter } from "next/navigation";
 import { FaReadme } from "react-icons/fa";
 import { Review } from "@prisma/client";
+import { useDeleState } from "@/hooks/use-comment-state";
 
 interface ReviewFormProps {
   bookId: string;
+  fetchData: () => void;
 }
 
-const ReviewForm = ({ bookId }: ReviewFormProps) => {
+const ReviewForm = ({ bookId, fetchData }: ReviewFormProps) => {
   const user = useCurrentUser();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
@@ -46,6 +48,9 @@ const ReviewForm = ({ bookId }: ReviewFormProps) => {
   const [isBookBought, setIsBookBought] = useState<boolean>(false);
   const [isReviewed, setIsReviewed] = useState<boolean>(true);
   const [isYourOwnBook, setIsYourOwnBook] = useState<boolean>(false);
+  const [isSubmit, setIsSubmit] = useState<boolean>(false);
+
+  const { isDeleted, update } = useDeleState();
   const router = useRouter();
   const checkIsYourOwnBook = async () => {
     const data = await checkIfIsAvailableByBookId(bookId, user?.id as string);
@@ -104,6 +109,9 @@ const ReviewForm = ({ bookId }: ReviewFormProps) => {
               if (res?.success) {
                 form?.reset();
                 setSuccess(res?.success);
+                setIsSubmit(true);
+                fetchData();
+                update(false);
               }
             })
             .catch(() => {
@@ -119,6 +127,89 @@ const ReviewForm = ({ bookId }: ReviewFormProps) => {
         },
         error: "Oops! what's wrong?",
       }
+    );
+  }
+
+  if (isSubmit && !isDeleted) {
+    return (
+      <>
+        <Alert variant="green">
+          {/* <AlertCircle className="h-4 w-4" /> */}
+          <AlertTitle>Comment</AlertTitle>
+          <AlertDescription>You already add a review. :)</AlertDescription>
+        </Alert>
+        <Button
+          variant="green"
+          className="w-full mt-2"
+          size="lg"
+          onClick={() => {
+            router.push(`/services/read/${bookId}`);
+          }}
+        >
+          <div className="flex items-center justify-center gap-x-2">
+            Read
+            <FaReadme className="h-5 w-5" />
+          </div>
+        </Button>
+      </>
+    );
+  }
+
+  if (isDeleted) {
+    return (
+      <>
+        <Card className="w-full">
+          <CardContent className="mt-3">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-2"
+              >
+                <FormField
+                  control={form.control}
+                  name="comment"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Comment</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Comment" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        This is your user id (auto field).
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? "Creating..." : "Create"}
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+
+        <div className="mt-2">
+          {!isPending && isYourOwnBook && user && (
+            <Button
+              variant="green"
+              className="w-full"
+              size="lg"
+              onClick={() => {
+                router.push(`/services/read/${bookId}`);
+              }}
+            >
+              <div className="flex items-center justify-center gap-x-2">
+                Read
+                <FaReadme className="h-5 w-5" />
+              </div>
+            </Button>
+          )}
+          {!isYourOwnBook && user && (
+            <AddToCartButton bookId={bookId as string} text="Add to cart" />
+          )}
+        </div>
+      </>
     );
   }
 

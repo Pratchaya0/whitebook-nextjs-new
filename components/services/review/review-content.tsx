@@ -10,30 +10,24 @@ import ReviewUser from "./review-user";
 
 interface ReviewContentProps {
   bookId: string;
+  fetchData: () => void;
+  reviews: Review[];
+  isPending: boolean;
 }
 
-const ReviewContent = ({ bookId }: ReviewContentProps) => {
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [isPending, startTransition] = useTransition();
-  const fetchReviews = async () => {
-    const data = await getReviewsByBookId(bookId);
-    setReviews(data as Review[]);
-  };
+const ReviewContent = ({ bookId, fetchData, reviews }: ReviewContentProps) => {
+  // const [reviews, setReviews] = useState<Review[]>([]);
+  // const [isPending, startTransition] = useTransition();
+  // const fetchReviews = async () => {
+  //   const data = await getReviewsByBookId(bookId);
+  //   setReviews(data as Review[]);
+  // };
 
-  useEffect(() => {
-    startTransition(() => {
-      fetchReviews();
-    });
-  }, []);
+  console.log(reviews);
 
   return (
     <>
-      {isPending && (
-        <div className="w-full flex justify-center items-center">
-          <PacmanLoader color="#36d7b7" />
-        </div>
-      )}
-      {!isPending && reviews ? (
+      {reviews ? (
         <ScrollArea className="h-[250px] w-full">
           <Table>
             <TableBody>
@@ -45,7 +39,7 @@ const ReviewContent = ({ bookId }: ReviewContentProps) => {
                         <ReviewUser
                           userId={_.userId as string}
                           review={_}
-                          fetchReviewData={fetchReviews}
+                          fetchReviewData={fetchData}
                         />
                       </div>
                       <p>{_.comment}</p>

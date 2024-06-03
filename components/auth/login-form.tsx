@@ -70,6 +70,7 @@ const LoginForm = () => {
 
               if (res?.twoFactor) {
                 setShowTwoFactor(true);
+                resolve({ res: "Email has sent!" });
               }
 
               resolve({ res: "Welcome back!" });
@@ -82,8 +83,9 @@ const LoginForm = () => {
       }),
       {
         loading: "Loading...",
-        success: (data) => {
-          return `Welcome back!`;
+        success: (data: any) => {
+          console.log(data.res);
+          return `${data.res}`;
         },
         error: "Oops! what's wrong?",
       }

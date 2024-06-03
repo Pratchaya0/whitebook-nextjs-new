@@ -118,7 +118,7 @@ export const columns: ColumnDef<Advertisement>[] = [
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(data.id)}
               >
-                Copy category ID
+                Copy advertise ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem

@@ -83,3 +83,11 @@ export const getListUserWithAmount = async () => {
     return null;
   }
 };
+
+export type TopTenBuyerChartType = {
+  name: string;
+  amount: string;
+  imageUrl: string;
+};
+
+export const getListUserTopTenBuyerChart = async () => {};

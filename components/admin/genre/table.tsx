@@ -95,7 +95,7 @@ export const columns: ColumnDef<GenreTag>[] = [
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(data.id)}
               >
-                Copy payment ID
+                Copy genre ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem

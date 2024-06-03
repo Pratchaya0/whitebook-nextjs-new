@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { deleteReview } from "@/actions/review";
 import { useRouter } from "next/navigation";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { useDeleState } from "@/hooks/use-comment-state";
 
 interface ReviewUserProps {
   userId: string;
@@ -23,12 +24,14 @@ const ReviewUser = ({ userId, review, fetchReviewData }: ReviewUserProps) => {
   const currentUser = useCurrentUser();
   const [user, setUser] = useState<User>();
   const [isPending, startTransition] = useTransition();
+  const { update } = useDeleState();
   const router = useRouter();
   const fetchUser = async () => {
     const data = await getUserById(userId);
     setUser(data as User);
   };
   const deleteReviewHandler = async () => {
+    update(true);
     toast.promise(
       new Promise((resolve) => {
         resolve(deleteReview(review.id));

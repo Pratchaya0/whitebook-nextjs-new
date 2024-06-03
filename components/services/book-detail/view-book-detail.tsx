@@ -61,6 +61,7 @@ import error from "next/error";
 import { Input } from "postcss";
 import ReviewForm from "../review/review-form";
 import ReviewContent from "../review/review-content";
+import ReviewClient from "../review/review-client";
 
 interface ViewBookDetailProps {
   bookId: string;
@@ -213,14 +214,15 @@ const ViewBookDetail = ({ bookId, isPage }: ViewBookDetailProps) => {
             <h2 className="font-bold bg-slate-200 rounded-md text-center">
               Reviews
             </h2>
-            <div className="grid grid-cols-3 gap-4 mt-3">
+            {/* <div className="grid grid-cols-3 gap-4 mt-3">
               <div>
                 <ReviewForm bookId={bookId} />
               </div>
               <div className="col-span-2">
                 <ReviewContent bookId={bookId} />
               </div>
-            </div>
+            </div> */}
+            <ReviewClient bookId={bookId} />
           </div>
         </>
       )}

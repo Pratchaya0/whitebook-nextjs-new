@@ -77,6 +77,7 @@ const ReviewUpdateForm = ({
 
               if (res?.success) {
                 form?.reset();
+                fetchReviewData();
                 setSuccess(res?.success);
               }
             })
@@ -89,7 +90,6 @@ const ReviewUpdateForm = ({
       {
         loading: "Loading...",
         success: (data) => {
-          fetchReviewData();
           return `Process has done!`;
         },
         error: "Oops! what's wrong?",

@@ -218,13 +218,13 @@ const UsersTable = () => {
           className="max-w-sm"
         />
         <div className="flex justify-center items-center gap-x-4">
-          <Button
+          {/* <Button
             variant="secondary"
             className="ml-auto"
             onClick={() => user()}
           >
             <FaRedoAlt />
-          </Button>
+          </Button> */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">

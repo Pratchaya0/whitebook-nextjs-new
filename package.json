@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@amcharts/amcharts4": "^4.10.38",
     "@auth/prisma-adapter": "^2.0.0",
     "@edgestore/react": "^0.1.6",
     "@edgestore/server": "^0.1.6",
