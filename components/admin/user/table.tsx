@@ -34,7 +34,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { User } from "@prisma/client";
-import { FaAngleDown, FaBars, FaRedoAlt } from "react-icons/fa";
+import { FaAngleDown, FaBars, FaCaretDown, FaChevronDown, FaRedoAlt } from "react-icons/fa";
 import { useEffect, useState, useTransition } from "react";
 import {
   UserWithAmountType,
@@ -115,7 +115,17 @@ export const columns: ColumnDef<UserWithAmountType>[] = [
   },
   {
     accessorKey: "amount",
-    header: "Total",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Total
+          <FaCaretDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("amount")} ฿</div>
     ),
