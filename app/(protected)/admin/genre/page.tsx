@@ -6,8 +6,8 @@ import { GenreTag } from "@prisma/client";
 
 const GenrePage = async () => {
   return (
-    <>
-      <div className="flex items-center justify-between gap-x-8">
+    <center>
+      <div className="w-[650px] flex items-center justify-between gap-x-8">
         <h2>Genres(tags) Management</h2>
         <div>
           <AddDialogButton title="Add Tag">
@@ -18,7 +18,7 @@ const GenrePage = async () => {
       <div className="flex flex-col items-center justify-center gap-y-8">
         <GenreTagTable />
       </div>
-    </>
+    </center>
   );
 };
 

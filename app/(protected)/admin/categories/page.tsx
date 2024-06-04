@@ -4,8 +4,8 @@ import CategoriesTable from "@/components/admin/categories/table";
 
 const CategoriesPage = async () => {
   return (
-    <>
-      <div className="flex items-center justify-between gap-x-8">
+    <center>
+      <div className="w-[650px] flex items-center justify-between gap-x-8">
         <h2>Categories Management</h2>
         <div>
           <AddDialogButton title="Add Category">
@@ -16,7 +16,7 @@ const CategoriesPage = async () => {
       <div className="flex flex-col items-center justify-center gap-y-8">
         <CategoriesTable />
       </div>
-    </>
+    </center>
   );
 };
 

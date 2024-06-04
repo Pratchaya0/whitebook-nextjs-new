@@ -43,28 +43,28 @@ import { getListCategories } from "@/data/category";
 import { use, useEffect, useRef, useState } from "react";
 
 export const columns: ColumnDef<Category>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && "indeterminate")
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "categoryName",
     header: "Name",
@@ -93,7 +93,7 @@ export const columns: ColumnDef<Category>[] = [
       const data = row.original;
 
       return (
-        <div className="flex items-left justify-start gap-x-2">
+        <div className="flex items-right justify-end gap-x-2">
           <UpdateDialogButton title="Update">
             <UpdateCategoryForm category={data} />
           </UpdateDialogButton>
@@ -180,7 +180,7 @@ const CategoriesTable = () => {
   });
 
   return (
-    <div className="w-full">
+    <div className="w-[650px]">
       <div className="flex items-center justify-between py-4">
         <Input
           placeholder="Filter Name..."

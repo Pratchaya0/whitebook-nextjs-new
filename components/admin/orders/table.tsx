@@ -57,28 +57,28 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 export const columns: ColumnDef<Order>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && "indeterminate")
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "id",
     header: "Payment Id",
@@ -312,14 +312,34 @@ const OrdersTable = () => {
   return (
     <div className="w-full">
       <div className="flex items-center justify-between py-4">
-        <Input
-          placeholder="Filter payment id..."
-          value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("id")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <div className="flex items-center justify-start gap-x-4">
+          <div>
+            <h4>Payment id: </h4>
+            <Input
+              placeholder="Filter payment id..."
+              value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn("id")?.setFilterValue(event.target.value)
+              }
+              className="max-w-sm"
+            />
+          </div>
+
+          <div>
+            <h4>User id: </h4>
+            <Input
+              placeholder="Filter user id..."
+              value={
+                (table.getColumn("userId")?.getFilterValue() as string) ?? ""
+              }
+              onChange={(event) =>
+                table.getColumn("userId")?.setFilterValue(event.target.value)
+              }
+              className="max-w-sm"
+            />
+          </div>
+        </div>
+
         <div className="flex justify-center items-center gap-x-4">
           {/* <Button
             variant="secondary"

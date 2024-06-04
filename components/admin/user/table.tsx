@@ -47,28 +47,28 @@ import header from "@/components/auth/header";
 import { getSumAllOrderAmountByUserId } from "@/data/order";
 
 export const columns: ColumnDef<UserWithAmountType>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && "indeterminate")
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "image",
     header: "Image",
@@ -116,7 +116,11 @@ export const columns: ColumnDef<UserWithAmountType>[] = [
   {
     accessorKey: "amount",
     header: "Total",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("amount")} ฿</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("amount")} ฿</div>
+    ),
+    enableSorting: true,
+    enableHiding: true,
   },
   {
     accessorKey: "role",
